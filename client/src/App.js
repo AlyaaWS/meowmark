@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 import LoadingPage from "./components/LoadingPage";
 import WelcomePage from "./components/WelcomePage";
@@ -21,6 +21,36 @@ function App() {
   const [userName, setUserName] = useState("");
 
   const [selectedBook, setSelectedBook] = useState(null);
+
+  // Shared State Books & Loading
+  const [books, setBooks] = useState([]);
+  const [isBooksLoading, setIsBooksLoading] = useState(false);
+
+  const fetchBooks = useCallback(async () => {
+    const userId = localStorage.getItem("userId");
+
+    if (!userId) return;
+
+    setIsBooksLoading(true);
+    try {
+      const response = await fetch(
+        `http://localhost:8080/books?userId=${userId}`,
+        { cache: "no-store" }
+      );
+
+      if (!response.ok) {
+        throw new Error("Gagal mengambil data buku");
+      }
+
+      const data = await response.json();
+      setBooks(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error("Error fetching books:", error);
+      setBooks([]);
+    } finally {
+      setIsBooksLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     const loadingTimer = setTimeout(() => {
@@ -49,6 +79,8 @@ function App() {
 
         setUserName(user.Name);
         setCurrentPage("home");
+
+        fetchBooks();
       } catch (error) {
         console.error(error);
 
@@ -61,7 +93,16 @@ function App() {
     };
 
     loadUser();
-  }, []);
+  }, [fetchBooks]);
+
+  const handleBookAdded = (newBook) => {
+    if (newBook && newBook.ID) {
+      setBooks((prevBooks) => [newBook, ...prevBooks]);
+    } else {
+      fetchBooks();
+    }
+    setCurrentPage("library");
+  };
 
   /* Loading */
 
@@ -88,6 +129,7 @@ function App() {
       <NamePage
         onSave={(user) => {
           setUserName(user.Name);
+          fetchBooks();
           setCurrentPage("home");
         }}
       />
@@ -100,6 +142,7 @@ function App() {
     return (
       <HomePage
         userName={userName}
+        books={books}
         onHome={() => setCurrentPage("home")}
         onLibrary={() => setCurrentPage("library")}
         onAddBook={() => setCurrentPage("addBook")}
@@ -114,6 +157,9 @@ function App() {
     return (
       <LibraryPage
         userName={userName}
+        books={books}
+        isLoading={isBooksLoading}
+        onRefreshBooks={fetchBooks}
         onHome={() => setCurrentPage("home")}
         onLibrary={() => setCurrentPage("library")}
         onAddBook={() => setCurrentPage("addBook")}
@@ -137,7 +183,7 @@ function App() {
     return (
       <AddBookPage
         onBack={() => setCurrentPage("library")}
-        onSave={() => setCurrentPage("library")}
+        onSave={handleBookAdded}
         onHome={() => setCurrentPage("home")}
         onLibrary={() => setCurrentPage("library")}
         onAddBook={() => setCurrentPage("addBook")}
@@ -153,7 +199,10 @@ function App() {
       <EditBookPage
         selectedBook={selectedBook}
         onBack={() => setCurrentPage("library")}
-        onSave={() => setCurrentPage("library")}
+        onSave={() => {
+          fetchBooks();
+          setCurrentPage("library");
+        }}
         onHome={() => setCurrentPage("home")}
         onLibrary={() => setCurrentPage("library")}
         onAddBook={() => setCurrentPage("addBook")}
@@ -168,6 +217,8 @@ function App() {
     return (
       <BookDetailPage
         selectedBook={selectedBook}
+        books={books}
+        setSelectedBook={setSelectedBook}
         onHome={() => setCurrentPage("home")}
         onLibrary={() => setCurrentPage("library")}
         onAddBook={() => setCurrentPage("addBook")}
@@ -204,6 +255,7 @@ function App() {
           localStorage.removeItem("userId");
 
           setUserName("");
+          setBooks([]);
           setCurrentPage("welcome");
         }}
       />

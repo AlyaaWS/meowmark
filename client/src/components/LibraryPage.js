@@ -10,6 +10,9 @@ import BackToTop from "./BackToTop";
 
 function LibraryPage({
   userName,
+  books = [],
+  isLoading = false,
+  onRefreshBooks,
   onHome,
   onLibrary,
   onAddBook,
@@ -49,67 +52,36 @@ function LibraryPage({
 
   const [selectedBook, setSelectedBook] = useState(null);
 
-  const [favoriteBooks, setFavoriteBooks] = useState([]);
-
-  const [books, setBooks] = useState([]);
 
   useEffect(() => {
-    const fetchBooks = async () => {
-      try {
-        const userId = localStorage.getItem("userId");
+    if (onRefreshBooks) {
+      onRefreshBooks();
+    }
+  }, [onRefreshBooks]);
 
-        console.log("UserID:", userId);
+  const handleFavorite = async (bookId) => {
+    const userId = Number(localStorage.getItem("userId"));
+    if (!userId) return;
 
-        const response = await fetch(
-          `http://localhost:8080/books?userId=${userId}`,
-          { cache: "no-store" }
-        );
+    try {
+      const response = await fetch(`http://localhost:8080/books/${bookId}/favorite`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ user_id: userId }),
+      });
 
-        console.log("Status:", response.status);
-
-        const data = await response.json();
-
-        console.log("DATA DARI BACKEND:", data);
-
-        setBooks(data || []);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchBooks();
-  }, []);
-
-  const handleFavorite = (bookId) => {
-    setFavoriteBooks((currentFavorites) => {
-      /*
-        Cek apakah ID buku sudah ada
-        di dalam daftar Favorite.
-        */
-
-      const isAlreadyFavorite = currentFavorites.includes(bookId);
-
-      /*
-        Kalau sudah menjadi Favorite,
-        hapus ID buku itu saja.
-        */
-
-      if (isAlreadyFavorite) {
-        return currentFavorites.filter((id) => id !== bookId);
+      if (!response.ok) {
+        throw new Error("Failed to toggle favorite");
       }
 
-      /*
-        Kalau belum Favorite:
-
-        ...currentFavorites
-        mempertahankan semua ID lama.
-
-        bookId
-        menambahkan ID baru.
-        */
-
-      return [...currentFavorites, bookId];
-    });
+      if (onRefreshBooks) {
+        onRefreshBooks();
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   /* =====================
@@ -149,8 +121,8 @@ function LibraryPage({
       activeCategory === "All"
         ? true
         : activeCategory === "Favorite"
-          ? favoriteBooks.includes(book.ID)
-          : book.category === activeCategory;
+          ? (book.is_favorite || book.isFavorite === true)
+          : (book.category || "Non Fiction").trim().toLowerCase() === activeCategory.trim().toLowerCase();
 
     /*
       Buku ditampilkan jika sesuai
@@ -240,65 +212,65 @@ function LibraryPage({
         ===================== */}
 
         <div ref={bookGridRef} className="library-book-grid">
-          {filteredBooks.map((book) => (
-            <article
-              key={book.ID}
-              className="library-book"
-              onClick={() => {
-                setSelectedBook(book);
-                setShowPopup(true);
-              }}
-            >
-              {/* COVER */}
+          {isLoading ? (
+            <div className="empty-library">
+              <p>Memuat buku, meow... 🐾</p>
+            </div>
+          ) : filteredBooks.length > 0 ? (
+            filteredBooks.map((book) => (
+              <article
+                key={book.ID}
+                className="library-book"
+                onClick={() => {
+                  setSelectedBook(book);
+                  setShowPopup(true);
+                }}
+              >
+                {/* COVER */}
 
-              <div className="library-cover-wrapper">
-                {book.cover ? (
-                  <img
-                    src={book.cover}
-                    alt={`Cover ${book.title}`}
-                    className="library-cover"
-                  />
-                ) : (
-                  <div className="library-cover-placeholder">BOOK</div>
-                )}
-              </div>
+                <div className="library-cover-wrapper">
+                  {book.cover ? (
+                    <img
+                      src={book.cover}
+                      alt={`Cover ${book.title}`}
+                      className="library-cover"
+                    />
+                  ) : (
+                    <div className="library-cover-placeholder">BOOK</div>
+                  )}
+                </div>
 
-              {/* INFO */}
+                {/* INFO */}
 
-              <div className="library-book-information">
-                <h2 className="library-book-title">{book.title}</h2>
+                <div className="library-book-information">
+                  <h2 className="library-book-title">{book.title}</h2>
 
-                <p className="library-book-author">{book.author}</p>
+                  <p className="library-book-author">{book.author}</p>
 
-                <button
-                  type="button"
-                  className={
-                    favoriteBooks.includes(book.ID)
-                      ? "favorite-button active"
-                      : "favorite-button"
-                  }
-                  aria-label={
-                    favoriteBooks.includes(book.ID)
-                      ? `Hapus ${book.title} dari Favorite`
-                      : `Tambahkan ${book.title} ke Favorite`
-                  }
-                  onClick={(event) => {
-                    event.stopPropagation();
+                  <button
+                    type="button"
+                    className={
+                      (book.is_favorite || book.isFavorite === true)
+                        ? "favorite-button active"
+                        : "favorite-button"
+                    }
+                    aria-label={
+                      (book.is_favorite || book.isFavorite === true)
+                        ? `Hapus ${book.title} dari Favorite`
+                        : `Tambahkan ${book.title} ke Favorite`
+                    }
+                    onClick={(event) => {
+                      event.stopPropagation();
 
-                    handleFavorite(book.ID);
-                  }}
-                >
-                  {favoriteBooks.includes(book.ID) ? "♥" : "♡"}
-                </button>
-              </div>
-            </article>
-          ))}
-
-          {/* =====================
-              HASIL KOSONG
-          ===================== */}
-
-          {filteredBooks.length === 0 && (
+                      handleFavorite(book.ID);
+                    }}
+                  >
+                    {(book.is_favorite || book.isFavorite === true) ? "♥" : "♡"}
+                  </button>
+                </div>
+              </article>
+            ))
+          ) : (
             <div className="empty-library">
               <p>Buku tidak ditemukan, meow 🐾</p>
             </div>
@@ -329,8 +301,17 @@ function LibraryPage({
           setShowPopup(false);
           onEditBook(selectedBook);
         }}
-        onDelete={() => {
-          console.log("Delete Book");
+        onDelete={async () => {
+          if (!selectedBook) return;
+          try {
+            const response = await fetch(`http://localhost:8080/books/${selectedBook.ID}`, {
+              method: "DELETE",
+            });
+            if (!response.ok) throw new Error("Failed to delete book");
+            if (onRefreshBooks) onRefreshBooks();
+          } catch (error) {
+            console.error(error);
+          }
           setShowPopup(false);
         }}
       />

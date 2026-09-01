@@ -7,47 +7,12 @@ import profileImage from "../assets/profil.png";
 import BottomNavbar from "./BottomNavbar";
 import BackToTop from "./BackToTop";
 
-function HomePage({ userName, onHome, onLibrary, onAddBook, onProfile }) {
+function HomePage({ userName, books = [], onHome, onLibrary, onAddBook, onProfile }) {
   /* Ref untuk membaca scroll daftar buku */
 
   const bookListRef = useRef(null);
 
-  /* Data buku sementara */
-
-  const books = [
-    {
-      id: 1,
-      title: "How Innovation Works",
-      author: "William Br.",
-      currentPage: 56,
-      totalPage: 100,
-      cover: null,
-    },
-    {
-      id: 2,
-      title: "Psychology of Money",
-      author: "William Br.",
-      currentPage: 20,
-      totalPage: 100,
-      cover: null,
-    },
-    {
-      id: 3,
-      title: "The Fine Print",
-      author: "William Br.",
-      currentPage: 89,
-      totalPage: 100,
-      cover: null,
-    },
-    {
-      id: 4,
-      title: "The Subtle Art",
-      author: "William Br.",
-      currentPage: 42,
-      totalPage: 100,
-      cover: null,
-    },
-  ];
+  const displayBooks = books;
 
   return (
     <main className="home-page">
@@ -92,46 +57,55 @@ function HomePage({ userName, onHome, onLibrary, onAddBook, onProfile }) {
         ===================== */}
 
         <div ref={bookListRef} className="book-list">
-          {books.map((book) => {
-            const progress = (book.currentPage / book.totalPage) * 100;
+          {displayBooks.length > 0 ? (
+            displayBooks.map((book) => {
+              const currentPg = book.current_page ?? book.currentPage ?? 0;
+              const totalPg = book.total_page ?? book.totalPage ?? 100;
+              const progress = totalPg > 0 ? (currentPg / totalPg) * 100 : 0;
+              const bookId = book.ID || book.id;
 
-            return (
-              <article className="book-card" key={book.id}>
-                {/* Cover buku */}
+              return (
+                <article className="book-card" key={bookId}>
+                  {/* Cover buku */}
 
-                <div className="book-cover">
-                  {book.cover ? (
-                    <img src={book.cover} alt={`Cover ${book.title}`} />
-                  ) : (
-                    <span>BOOK</span>
-                  )}
-                </div>
-
-                {/* Informasi buku */}
-
-                <div className="book-information">
-                  <h3 className="book-title">{book.title}</h3>
-
-                  <p className="book-author">{book.author}</p>
-
-                  <p className="book-page">
-                    Halaman {book.currentPage}/{book.totalPage}
-                  </p>
-
-                  {/* Progress membaca */}
-
-                  <div className="progress-track">
-                    <div
-                      className="progress-value"
-                      style={{
-                        width: `${progress}%`,
-                      }}
-                    />
+                  <div className="book-cover">
+                    {book.cover ? (
+                      <img src={book.cover} alt={`Cover ${book.title}`} />
+                    ) : (
+                      <span>BOOK</span>
+                    )}
                   </div>
-                </div>
-              </article>
-            );
-          })}
+
+                  {/* Informasi buku */}
+
+                  <div className="book-information">
+                    <h3 className="book-title">{book.title}</h3>
+
+                    <p className="book-author">{book.author}</p>
+
+                    <p className="book-page">
+                      Halaman {currentPg}/{totalPg}
+                    </p>
+
+                    {/* Progress membaca */}
+
+                    <div className="progress-track">
+                      <div
+                        className="progress-value"
+                        style={{
+                          width: `${progress}%`,
+                        }}
+                      />
+                    </div>
+                  </div>
+                </article>
+              );
+            })
+          ) : (
+            <div style={{ textAlign: "center", color: "#888", padding: "20px" }}>
+              <p>Belum ada buku yang dibaca, meow 🐾</p>
+            </div>
+          )}
         </div>
       </section>
 

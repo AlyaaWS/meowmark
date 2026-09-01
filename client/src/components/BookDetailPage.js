@@ -7,6 +7,8 @@ import editIcon from "../assets/edit.png";
 
 function BookDetailPage({
   selectedBook,
+  books,
+  setSelectedBook,
   onHome,
   onLibrary,
   onAddBook,
@@ -39,11 +41,23 @@ function BookDetailPage({
   };
 
   const handlePrevious = () => {
-    console.log("Previous Book");
+    if (!books || !selectedBook) return;
+    const currentIndex = books.findIndex((b) => b.ID === selectedBook.ID);
+    if (currentIndex > 0) {
+      setSelectedBook(books[currentIndex - 1]);
+      setRating(books[currentIndex - 1].rating || 4);
+      setReview(books[currentIndex - 1].review || "");
+    }
   };
 
   const handleNext = () => {
-    console.log("Next Book");
+    if (!books || !selectedBook) return;
+    const currentIndex = books.findIndex((b) => b.ID === selectedBook.ID);
+    if (currentIndex < books.length - 1) {
+      setSelectedBook(books[currentIndex + 1]);
+      setRating(books[currentIndex + 1].rating || 4);
+      setReview(books[currentIndex + 1].review || "");
+    }
   };
 
   const handleReviewBlur = () => {

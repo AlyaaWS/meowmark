@@ -19,9 +19,11 @@ function PDFReaderPage({ selectedBook, onHome, onLibrary, onAddBook }) {
 
   const [showControls, setShowControls] = useState(true);
 
-  const totalPage = selectedBook?.totalPage || 200;
+  const totalPage = selectedBook?.total_page ?? selectedBook?.totalPage ?? 200;
 
-  const [currentPage, setCurrentPage] = useState(167);
+  const [currentPage, setCurrentPage] = useState(
+    selectedBook?.current_page ?? selectedBook?.currentPage ?? 1
+  );
 
   /* =====================
      AUTO HIDE

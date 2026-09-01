@@ -20,15 +20,17 @@ function EditBookPage({ selectedBook, onBack, onSave, onProfile}) {
   );
 
   const [currentPage, setCurrentPage] = useState(
-    selectedBook?.currentPage || 0,
+    selectedBook?.current_page ?? selectedBook?.currentPage ?? 0,
   );
 
-  const [totalPage, setTotalPage] = useState(selectedBook?.totalPage || 100);
+  const [totalPage, setTotalPage] = useState(
+    selectedBook?.total_page ?? selectedBook?.totalPage ?? 100,
+  );
 
   const [coverPreview, setCoverPreview] = useState(selectedBook?.cover || null);
 
   const [bookFileName, setBookFileName] = useState(
-    selectedBook?.fileName || "No PDF Selected",
+    selectedBook?.fileName || selectedBook?.pdf || "No PDF Selected",
   );
 
   const handleCoverChange = (event) => {
@@ -47,22 +49,40 @@ function EditBookPage({ selectedBook, onBack, onSave, onProfile}) {
     setBookFileName(file.name);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
-    onSave({
-      selectedBook,
-
+    const updatedData = {
       title,
       author,
       description,
       review,
       category,
-      currentPage,
-      totalPage,
-      fileName: bookFileName,
+      current_page: currentPage,
+      total_page: totalPage,
+      pdf: bookFileName,
       cover: coverPreview,
-    });
+      user_id: Number(localStorage.getItem("userId"))
+    };
+
+    try {
+      const response = await fetch(`http://localhost:8080/books/${selectedBook.ID}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update book");
+      }
+
+      onSave();
+    } catch (error) {
+      console.error(error);
+      alert("Gagal mengupdate buku!");
+    }
   };
 
   return (
