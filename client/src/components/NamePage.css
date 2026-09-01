@@ -1,0 +1,344 @@
+.name-page {
+  width: 100%;
+  min-height: 100vh;
+
+  display: flex;
+  justify-content: center;
+
+  background-color: var(--color-primary);
+}
+
+/* Isi utama */
+
+.name-content {
+  position: relative;
+
+  width: 100%;
+  max-width: 430px;
+  min-height: 100vh;
+
+  padding: 45px 28px 35px;
+  margin-top: 10px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  overflow: hidden;
+}
+
+/* =========================
+   JUDUL DAN DESKRIPSI
+========================= */
+
+.name-header {
+  width: 100%;
+
+  text-align: center;
+}
+
+.name-title {
+  margin: 0;
+
+  color: var(--color-cream);
+
+  font-family: var(--font-heading);
+  font-size: 38px;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.name-description {
+  margin: 11px 0 0;
+
+  color: #ffffff;
+
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.45;
+}
+
+/* =========================
+   ILUSTRASI
+========================= */
+
+.name-hero {
+  width: 100%;
+
+  margin-top: -50px;
+
+  display: flex;
+  justify-content: center;
+}
+
+.name-image {
+  width: 500px;
+  max-width: 100%;
+  height: auto;
+  margin-top: -45px;
+
+  display: block;
+
+  object-fit: contain;
+}
+
+/* =========================
+   FORM NAMA
+========================= */
+
+.name-form {
+  width: 100%;
+
+  /*
+  Menggantikan posisi tombol Mulai.
+  Karena PNG punya ruang transparan,
+  form perlu dinaikkan sedikit.
+  */
+  margin-top: -70px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.name-label {
+  margin-bottom: 14px;
+
+  color: var(--color-cream);
+
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 700;
+
+  text-align: center;
+}
+
+.name-input {
+  width: 100%;
+  max-width: 280px;
+  min-height: 62px;
+
+  padding: 0 22px;
+
+  border: 1.5px solid #111111;
+  border-radius: 16px;
+  outline: none;
+
+  background-color: var(--color-brown);
+  color: #ffffff;
+
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-style: italic;
+  font-weight: 600;
+
+  text-align: center;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.name-input::placeholder {
+  color: rgba(255, 255, 255, 0.9);
+
+  opacity: 1;
+}
+
+.name-input:focus {
+  border-color: var(--color-cream);
+
+  box-shadow:
+    0 0 0 3px rgba(243, 228, 201, 0.15);
+}
+
+/* =========================
+   TOMBOL SAVE
+========================= */
+
+.save-button {
+  width: 100%;
+  max-width: 280px;
+  height: 52px;
+
+  margin-top: 20px;
+  margin-left: 0;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+
+  border: none;
+  border-radius: 17px;
+
+  background-color: var(--color-cream);
+  color: var(--color-primary);
+
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.save-arrow {
+  font-family: Arial, sans-serif;
+  font-size: 28px;
+  line-height: 1;
+  position: relative;
+  top: -2px;
+}
+
+.save-button:hover {
+  opacity: 0.9;
+
+  transform: translateX(3px);
+}
+
+.save-button:active {
+  transform: scale(0.97);
+}
+
+/* =========================
+   POPUP
+========================= */
+
+.popup-overlay {
+  position: fixed;
+  z-index: 100;
+
+  inset: 0;
+
+  padding: 25px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background-color: rgba(5, 9, 35, 0.75);
+
+  backdrop-filter: blur(3px);
+
+  animation: showOverlay 0.2s ease;
+}
+
+.name-popup {
+  width: 100%;
+  max-width: 310px;
+
+  padding: 28px 25px 24px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  border: 2px solid var(--color-cream);
+  border-radius: 24px;
+
+  background-color: var(--color-primary);
+
+  text-align: center;
+
+  box-shadow:
+    0 15px 40px rgba(0, 0, 0, 0.3);
+
+  animation: showPopup 0.25s ease;
+}
+
+.popup-cat {
+  color: var(--color-cream);
+
+  font-family: var(--font-body);
+  font-size: 28px;
+}
+
+.popup-title {
+  margin: 12px 0 0;
+
+  color: var(--color-cream);
+
+  font-family: var(--font-heading);
+  font-size: 27px;
+  font-weight: 400;
+}
+
+.popup-description {
+  margin: 9px 0 22px;
+
+  color: #ffffff;
+
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.popup-button {
+  min-width: 145px;
+  min-height: 45px;
+
+  padding: 0 22px;
+
+  border: none;
+  border-radius: 14px;
+
+  background-color: var(--color-brown);
+  color: #ffffff;
+
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.popup-button:hover {
+  opacity: 0.9;
+
+  transform: translateY(-2px);
+}
+
+.popup-button:active {
+  transform: scale(0.97);
+}
+
+/* =========================
+   ANIMASI POPUP
+========================= */
+
+@keyframes showOverlay {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes showPopup {
+  from {
+    opacity: 0;
+
+    transform:
+      translateY(12px)
+      scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+
+    transform:
+      translateY(0)
+      scale(1);
+  }
+}

@@ -1,0 +1,77 @@
+.bottom-navbar {
+  position: absolute;
+
+  left: 50%;
+  bottom: 0;
+
+  width: 225px;
+  height: 45px;
+
+  padding: 0 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border-radius: 22px 22px 0 0;
+
+  background-color: var(--color-primary);
+
+  transform: translateX(-50%);
+
+  z-index: 50;
+}
+
+/* Tombol */
+
+.bottom-navbar-button {
+  position: relative;
+
+  width: 34px;
+  height: 44px;
+
+  padding: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: none;
+
+  background-color: transparent;
+
+  cursor: pointer;
+
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+/* Icon */
+
+.bottom-navbar-icon {
+  width: 23px;
+  height: 23px;
+
+  display: block;
+
+  object-fit: contain;
+
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+/* Hover */
+
+.bottom-navbar-button:hover {
+  opacity: 0.8;
+
+  transform: translateY(-2px);
+}
+
+/* Saat diklik */
+
+.bottom-navbar-button:active {
+  transform: scale(0.9);
+}

@@ -1,0 +1,113 @@
+.welcome-page {
+  width: 100%;
+  min-height: 100vh;
+
+  display: flex;
+  justify-content: center;
+
+  background-color: var(--color-primary);
+}
+
+/* Isi utama */
+
+.welcome-content {
+  width: 100%;
+  max-width: 430px;
+  min-height: 100vh;
+
+  padding: 45px 28px 50px;
+  margin-top: 10px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Judul dan deskripsi */
+
+.welcome-header {
+  width: 100%;
+
+  text-align: center;
+}
+
+.welcome-title {
+  margin: 0;
+
+  color: var(--color-cream);
+
+  font-family: var(--font-heading);
+  font-size: 38px;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.welcome-title span {
+  color: var(--color-cream);
+}
+
+.welcome-description {
+  margin: 11px 0 0;
+
+  color: white;
+
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.45;
+}
+
+/* Ilustrasi */
+
+.welcome-hero {
+  width: 100%;
+
+  margin-top: -50px;
+
+  display: flex;
+  justify-content: center;
+}
+
+.welcome-image {
+  width: 500px;
+  max-width: 100%;
+  height: auto;
+
+  object-fit: contain;
+}
+
+/* Tombol */
+
+.start-button {
+  width: 100%;
+  max-width: 250px;
+  min-height: 62px;
+
+  margin-top: -60px;
+
+  border: 1.5px solid #111;
+  border-radius: 16px;
+
+  background-color: var(--color-brown);
+  color: white;
+
+  font-family: var(--font-body);
+  font-size: 21px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.start-button:hover {
+  opacity: 0.9;
+
+  transform: translateY(-2px);
+}
+
+.start-button:active {
+  transform: scale(0.98);
+}

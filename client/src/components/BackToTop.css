@@ -1,0 +1,68 @@
+.back-to-top {
+  --progress: 0%;
+
+  position: absolute;
+  right: 22px;
+  bottom: 95px;
+
+  width: 50px;
+  height: 50px;
+
+  border: none;
+  border-radius: 50%;
+
+  background:
+    conic-gradient(
+      var(--color-primary) var(--progress),
+      #d9d9d9 var(--progress)
+    );
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  cursor: pointer;
+
+  opacity: 0;
+  visibility: hidden;
+
+  transition:
+    opacity .25s,
+    transform .25s,
+    visibility .25s;
+
+  z-index: 999;
+}
+
+.back-to-top.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.back-to-top::before {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border-radius: 50%;
+  background: var(--color-brown);
+  z-index: 1;
+}
+
+.back-to-top span {
+  position: relative;
+  z-index: 2;
+
+  color: var(--color-primary);
+
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.back-to-top:hover {
+  transform: translateY(-3px);
+}
+
+.back-to-top:active {
+  transform: scale(.92);
+}

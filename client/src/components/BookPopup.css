@@ -1,0 +1,126 @@
+/* =========================
+   OVERLAY
+========================= */
+
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: rgba(0, 0, 0, 0.45);
+
+  backdrop-filter: blur(3px);
+
+  z-index: 999;
+}
+
+/* =========================
+   POPUP
+========================= */
+
+.book-popup {
+  width: calc(100% - 40px);
+  max-width: 360px;
+
+  padding: 28px 22px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 14px;
+
+  border-radius: 24px;
+
+  background-color: var(--color-cream);
+
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
+
+  animation: popupShow 0.25s ease;
+}
+
+/* =========================
+   TITLE
+========================= */
+
+.popup-title {
+  margin: 0 0 8px;
+
+  color: var(--color-brown);
+
+  font-family: var(--font-heading);
+  font-size: 34px;
+  font-weight: 400;
+}
+
+/* =========================
+   BUTTON
+========================= */
+
+.popup-button {
+  width: 100%;
+  height: 56px;
+
+  border: none;
+  border-radius: 14px;
+
+  color: white;
+
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.popup-button:hover {
+  opacity: 0.95;
+  transform: translateY(-2px);
+}
+
+.popup-button:active {
+  transform: scale(0.98);
+}
+
+/* =========================
+   WARNA
+========================= */
+
+.read-button {
+  background-color: var(--color-primary);
+}
+
+.detail-button {
+  background-color: #F4C84F;
+}
+
+.edit-button {
+  background-color: var(--color-brown);
+}
+
+.remove-button {
+  background-color: #D65A7F;
+}
+
+/* =========================
+   ANIMATION
+========================= */
+
+@keyframes popupShow {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

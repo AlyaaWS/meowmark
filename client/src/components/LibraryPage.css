@@ -1,0 +1,451 @@
+.library-page {
+  position: relative;
+
+  width: 100%;
+  max-width: 430px;
+  height: 100vh;
+
+  margin: 0 auto;
+
+  display: flex;
+  flex-direction: column;
+
+  background-color: var(--color-cream);
+
+  overflow: hidden;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.library-header {
+  position: relative;
+  z-index: 1;
+
+  width: 100%;
+
+  padding: 55px 0 26px;
+
+  flex-shrink: 0;
+
+  background-color: var(--color-primary);
+}
+
+.library-title-row {
+  padding: 0 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.library-title {
+  margin: 0;
+
+  color: var(--color-sage);
+
+  font-family: var(--font-heading);
+  font-size: 27px;
+  font-weight: 400;
+}
+
+.library-profile-button {
+  width: 48px;
+  height: 48px;
+
+  padding: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border: none;
+  border-radius: 50%;
+
+  background-color: #ffffff;
+
+  overflow: hidden;
+
+  cursor: pointer;
+}
+
+.library-profile-image {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: contain;
+}
+
+/* =========================
+   CATEGORY
+========================= */
+
+.category-scroll {
+  width: 100%;
+
+  margin-top: 20px;
+
+  padding:
+    0
+    28px
+    4px;
+
+  display: flex;
+  flex-wrap: nowrap;
+
+  gap: 10px;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  -webkit-overflow-scrolling: touch;
+
+  overscroll-behavior-x: contain;
+
+  scrollbar-width: none;
+
+  cursor: grab;
+
+  scroll-padding-left: 28px;
+}
+
+.category-scroll:active {
+  cursor: grabbing;
+}
+
+.category-scroll::-webkit-scrollbar {
+  display: none;
+}
+.category-scroll:active {
+  cursor: grabbing;
+}
+
+.category-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* Tombol kategori */
+
+.category-button {
+  min-width: 84px;
+
+  padding: 8px 15px;
+
+  flex: 0 0 auto;
+
+  border: none;
+  border-radius: 10px;
+
+  background-color: var(--color-brown);
+  color: #ffffff;
+
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 600;
+
+  white-space: nowrap;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease,
+    opacity 0.2s ease;
+}
+
+/* Kategori aktif */
+
+.category-button.active {
+  background-color: var(--color-cream);
+  color: var(--color-primary);
+
+  font-weight: 700;
+}
+
+/* Hover hanya untuk tombol yang tidak aktif */
+
+.category-button:not(.active):hover {
+  opacity: 0.85;
+}
+
+.category-button:active {
+  transform: scale(0.96);
+}
+
+/* =========================
+   CONTENT
+========================= */
+
+.library-content {
+  position: relative;
+  z-index: 2;
+
+  min-height: 0;
+
+  padding: 0 28px;
+
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+
+  overflow: visible;
+}
+
+/* =========================
+   SEARCH
+========================= */
+
+.search-wrapper {
+  position: relative;
+  z-index: 10;
+
+  width: 100%;
+
+  margin-top: -15px;
+
+  flex-shrink: 0;
+}
+
+.search-icon {
+  position: absolute;
+
+  top: 50%;
+  left: 16px;
+
+  color: #666666;
+
+  font-family: Arial, sans-serif;
+  font-size: 24px;
+
+  pointer-events: none;
+
+  transform: translateY(-54%);
+}
+
+.library-search {
+  width: 100%;
+  height: 42px;
+
+  padding: 0 18px 0 43px;
+
+  border: 1.5px solid var(--color-primary);
+  border-radius: 13px;
+  outline: none;
+
+  background-color: #ffffff;
+  color: var(--color-primary);
+
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 500;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.library-search::placeholder {
+  color: #777777;
+}
+
+.library-search:focus {
+  border-color: var(--color-brown);
+
+  box-shadow: 0 0 0 3px rgba(139, 94, 60, 0.12);
+}
+
+/* =========================
+   GRID BUKU
+========================= */
+
+.library-book-grid {
+  min-height: 0;
+
+  margin-top: 28px;
+  padding-bottom: 80px;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  align-content: start;
+
+  column-gap: 26px;
+  row-gap: 28px;
+
+  flex: 1;
+
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  -webkit-overflow-scrolling: touch;
+
+  overscroll-behavior-y: contain;
+
+  scrollbar-width: none;
+}
+
+.library-book-grid::-webkit-scrollbar {
+  display: none;
+}
+
+/* =========================
+   CARD BUKU
+========================= */
+
+.library-book {
+  position: relative;
+
+  min-width: 0;
+
+  padding-top: 103px;
+}
+
+.library-cover-wrapper {
+  position: absolute;
+  z-index: 2;
+
+  top: 0;
+  left: 50%;
+
+  width: 95px;
+  height: 135px;
+
+  border-radius: 13px;
+
+  overflow: hidden;
+
+  box-shadow: 0 5px 8px rgba(0, 0, 0, 0.2);
+
+  transform: translateX(-50%);
+}
+
+.library-cover {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+}
+
+.library-cover-placeholder {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-color: var(--color-sage);
+  color: var(--color-primary);
+
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* =========================
+   INFORMASI BUKU
+========================= */
+
+.library-book-information {
+  position: relative;
+
+  min-height: 77px;
+
+  padding: 39px 17px 10px 10px;
+
+  border-radius: 0 0 8px 8px;
+
+  background-color: var(--color-primary);
+
+  box-shadow: 0 4px 5px rgba(0, 0, 0, 0.2);
+}
+
+.library-book-title {
+  margin: 0;
+
+  color: #ffffff;
+
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 700;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+}
+
+.library-book-author {
+  margin: 2px 0 0;
+
+  color: #ffffff;
+
+  font-family: var(--font-body);
+  font-size: 9px;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+}
+
+/* =========================
+   FAVORITE
+========================= */
+
+.favorite-button {
+  position: absolute;
+
+  right: 8px;
+  bottom: 7px;
+
+  width: 25px;
+  height: 25px;
+
+  padding: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: none;
+
+  background-color: transparent;
+  color: #ffffff;
+
+  font-family: Arial, sans-serif;
+  font-size: 21px;
+  line-height: 1;
+
+  cursor: pointer;
+
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+/* Saat buku masuk Favorite */
+
+.favorite-button.active {
+  color: #e63946;
+}
+
+.favorite-button:hover {
+  transform: scale(1.15);
+}
+
+.favorite-button:active {
+  transform: scale(0.9);
+}

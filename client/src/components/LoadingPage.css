@@ -1,0 +1,95 @@
+.loading-page {
+  width: 100%;
+  min-height: 100vh;
+
+  background-color: var(--color-primary);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  overflow: hidden;
+}
+
+.loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cat-logo {
+  width: 60%;
+  height: 60px;
+
+  overflow: visible;
+}
+
+.cat-line {
+  fill: none;
+
+  stroke: var(--color-cream);
+  stroke-width: 3;
+
+  stroke-linecap: round;
+  stroke-linejoin: round;
+
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+
+  animation: drawCat 2.8s ease-in-out infinite;
+}
+
+/* Tulisan */
+.loading-text {
+  margin: 12px 0 0;
+
+  color: var(--color-cream);
+
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-style: italic;
+  font-weight: 400;
+
+  opacity: 1;
+}
+
+/* Garis kucing tergambar */
+
+@keyframes drawCat {
+  0% {
+    stroke-dashoffset: 1;
+    opacity: 0;
+  }
+
+  5% {
+    opacity: 1;
+  }
+
+  65% {
+    stroke-dashoffset: 0;
+  }
+
+  90% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+
+/* Menghormati pengaturan reduced motion */
+
+@media (prefers-reduced-motion: reduce) {
+  .cat-line {
+    stroke-dashoffset: 0;
+    animation: none;
+  }
+
+  .loading-text {
+    opacity: 1;
+    animation: none;
+  }
+}

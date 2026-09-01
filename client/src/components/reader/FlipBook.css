@@ -1,0 +1,80 @@
+.flipbook-container{
+
+    position:relative;
+
+    width:100%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+}
+
+.flip-page{
+
+    width:82%;
+
+    height:640px;
+
+    background:white;
+
+    border-radius:10px;
+
+    box-shadow:
+        0 8px 25px rgba(0,0,0,.15);
+
+    overflow:hidden;
+
+    transform-style:preserve-3d;
+
+}
+
+.dummy-page{
+
+    width:100%;
+
+    height:100%;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+}
+
+.flip-left{
+
+    position:absolute;
+
+    left:0;
+
+    width:30%;
+
+    height:100%;
+
+    z-index:20;
+
+    cursor:pointer;
+
+}
+
+.flip-right{
+
+    position:absolute;
+
+    right:0;
+
+    width:30%;
+
+    height:100%;
+
+    z-index:20;
+
+    cursor:pointer;
+
+}

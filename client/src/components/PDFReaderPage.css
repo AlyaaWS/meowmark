@@ -1,0 +1,351 @@
+.reader-page{
+    width:100%;
+    max-width:430px;
+    min-height:100vh;
+    margin:0 auto;
+    position:relative;
+    overflow:hidden;
+    transition:.3s;
+}
+
+/* =========================
+   THEME
+========================= */
+
+.reader-page.yellow{
+    background:#F3E4C9;
+}
+
+.reader-page.navy{
+    background:#111844;
+}
+
+.reader-page.sage{
+    background:#D3D4C0;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.reader-header{
+    width:100%;
+    display:flex;
+    justify-content:flex-end;
+    padding:22px;
+    box-sizing:border-box;
+    position:absolute;
+    top:-5px;
+    left:0;
+    z-index:20;
+}
+
+.theme-button{
+    width:42px;
+    height:42px;
+    border:none;
+    background:transparent;
+    cursor:pointer;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.theme-icon{
+    width:24px;
+    height:24px;
+    object-fit:contain;
+}
+
+/* =========================
+   PAGE NUMBER
+========================= */
+
+.reader-page-number{
+    position:absolute;
+    top:28px;
+    left:50%;
+    transform:translateX(-50%);
+    font-size:14px;
+    font-family:var(--font-body);
+    font-weight:600;
+    color:var(--color-primary);
+    z-index:20;
+}
+
+/* =========================
+   PDF
+========================= */
+
+.reader-content{
+    width:100%;
+    margin-top: 18px;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    position:relative;
+}
+
+.pdf-placeholder{
+    width:82%;
+    height:640px;
+    background:white;
+    border-radius:14px;
+    box-shadow:0 10px 30px rgba(0,0,0,.12);
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:30px;
+    box-sizing:border-box;
+}
+
+.pdf-placeholder h2{
+    margin:0;
+    color:var(--color-primary);
+    font-family:var(--font-heading);
+    font-size:28px;
+}
+
+.pdf-placeholder p{
+    margin:18px 0 8px;
+    font-size:18px;
+    font-family:var(--font-body);
+    font-weight:600;
+}
+
+.pdf-placeholder span{
+    color:#888;
+    font-size:13px;
+    font-family:var(--font-body);
+}
+
+/* =========================
+   ARROW
+========================= */
+
+.reader-arrow{
+
+    position:absolute;
+
+    top:50%;
+
+    transform:translateY(-50%);
+
+    width:46px;
+
+    height:46px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:rgba(255,255,255,.92);
+
+    box-shadow:0 4px 15px rgba(0,0,0,.12);
+
+    font-size:24px;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+    z-index:20;
+
+}
+
+.reader-arrow:hover{
+
+    transform:translateY(-50%) scale(1.08);
+
+}
+
+.reader-arrow.left{
+
+    left:12px;
+
+}
+
+.reader-arrow.right{
+
+    right:12px;
+
+}
+
+/* =========================
+   THEME MODAL
+========================= */
+
+.theme-overlay{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,.35);
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    z-index:100;
+
+}
+
+.theme-modal{
+
+    width:300px;
+
+    background:white;
+
+    border-radius:22px;
+
+    padding:28px 24px;
+
+    box-sizing:border-box;
+
+    animation:popup .25s ease;
+
+}
+
+.theme-title{
+
+    margin:0 0 24px;
+
+    text-align:center;
+
+    font-size:26px;
+
+    line-height:1.35;
+
+    color:var(--color-primary);
+
+    font-family:var(--font-heading);
+
+}
+
+.theme-option{
+
+    width:100%;
+
+    height:52px;
+
+    margin-bottom:14px;
+
+    border:none;
+
+    border-radius:14px;
+
+    background:var(--color-cream);
+
+    color:var(--color-primary);
+
+    font-size:15px;
+
+    font-weight:600;
+
+    font-family:var(--font-body);
+
+    cursor:pointer;
+
+    transition:.25s;
+
+}
+
+.theme-option:last-child{
+
+    margin-bottom:0;
+
+}
+
+.theme-option:hover{
+
+    transform:translateY(-2px);
+
+}
+
+.theme-option.active{
+
+    background:var(--color-primary);
+
+    color:white;
+
+}
+
+/* =========================
+   ANIMATION
+========================= */
+
+@keyframes popup{
+
+    from{
+
+        opacity:0;
+
+        transform:scale(.92);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:scale(1);
+
+    }
+
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width:430px){
+
+    .reader-page{
+
+        max-width:100%;
+
+    }
+
+    .pdf-placeholder{
+
+        width:86%;
+
+        height:580px;
+
+    }
+
+    .reader-arrow{
+
+        width:40px;
+
+        height:40px;
+
+        font-size:20px;
+
+    }
+
+    .reader-arrow.left{
+
+        left:8px;
+
+    }
+
+    .reader-arrow.right{
+
+        right:8px;
+
+    }
+
+    .theme-modal{
+
+        width:88%;
+
+    }
+
+}

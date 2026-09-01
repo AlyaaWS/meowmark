@@ -1,0 +1,296 @@
+.edit-page {
+  width: 100%;
+  max-width: 430px;
+  min-height: 100vh;
+
+  margin: 0 auto;
+
+  background: var(--color-cream);
+
+  overflow-y: auto;
+}
+
+/* =====================
+   HEADER
+===================== */
+
+.edit-header {
+  width: 100%;
+  height: 90px;
+
+  padding: 0 28px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  background: var(--color-primary);
+
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.edit-header h1 {
+  margin: 0;
+
+  color: var(--color-cream);
+
+  font-family: var(--font-heading);
+  font-size: 28px;
+  font-weight: 400;
+}
+
+.back-button {
+  width: 42px;
+  height: 42px;
+
+  border: none;
+  border-radius: 50%;
+
+  background: rgba(255,255,255,.15);
+
+  color: white;
+
+  font-size: 22px;
+
+  cursor: pointer;
+
+  transition: .2s;
+}
+
+.back-button:hover{
+  transform: scale(1.05);
+}
+
+.edit-profile{
+  width:46px;
+  height:46px;
+
+  object-fit:cover;
+
+  border-radius:50%;
+
+  background:white;
+}
+
+/* =====================
+   FORM
+===================== */
+
+.edit-form{
+  padding:30px 28px 100px;
+
+  display:flex;
+  flex-direction:column;
+
+  gap:22px;
+}
+
+.form-group{
+  display:flex;
+  flex-direction:column;
+
+  gap:8px;
+}
+
+.form-group label{
+  color:var(--color-primary);
+
+  font-family:var(--font-body);
+
+  font-weight:600;
+
+  font-size:14px;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select{
+
+  width:100%;
+
+  padding:14px 16px;
+
+  border:none;
+
+  border-radius:14px;
+
+  outline:none;
+
+  background:white;
+
+  font-family:var(--font-body);
+
+  font-size:14px;
+
+  box-sizing:border-box;
+
+  transition:.2s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus{
+
+  box-shadow:0 0 0 3px rgba(17,24,68,.12);
+
+}
+
+textarea{
+
+  resize:none;
+
+}
+
+/* =====================
+   PDF
+===================== */
+
+.file-box{
+
+  background:white;
+
+  border-radius:14px;
+
+  padding:15px 18px;
+
+  display:flex;
+
+  justify-content:space-between;
+
+  align-items:center;
+}
+
+.change-button{
+
+  color:var(--color-brown);
+
+  font-weight:700;
+
+  cursor:pointer;
+}
+
+/* =====================
+   COVER
+===================== */
+
+.cover-upload{
+
+  width:150px;
+  height:205px;
+
+  border-radius:18px;
+
+  background:white;
+
+  overflow:hidden;
+
+  cursor:pointer;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  transition:.2s;
+
+  box-shadow:0 5px 15px rgba(0,0,0,.08);
+
+}
+
+.cover-upload:hover{
+
+  transform:translateY(-3px);
+
+}
+
+.cover-preview{
+
+  width:100%;
+  height:100%;
+
+  object-fit:cover;
+
+}
+
+.cover-placeholder{
+
+  font-size:50px;
+
+  color:var(--color-brown);
+
+}
+
+/* =====================
+   PAGE
+===================== */
+
+.page-row{
+
+  display:grid;
+
+  grid-template-columns:1fr 1fr;
+
+  gap:18px;
+
+}
+
+/* =====================
+   SAVE
+===================== */
+
+.save-button{
+
+  width:100%;
+
+  height:58px;
+
+  margin-top:10px;
+
+  border:none;
+
+  border-radius:18px;
+
+  background:var(--color-brown);
+
+  color:white;
+
+  font-family:var(--font-body);
+
+  font-size:18px;
+
+  font-weight:700;
+
+  cursor:pointer;
+
+  transition:.2s;
+
+}
+
+.save-button:hover{
+
+  transform:translateY(-2px);
+
+}
+
+.save-button:active{
+
+  transform:scale(.98);
+
+}
+
+/* =====================
+   MOBILE
+===================== */
+
+@media(max-width:430px){
+
+.edit-page{
+
+max-width:100%;
+
+}
+
+}
