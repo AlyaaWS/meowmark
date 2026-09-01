@@ -87,22 +87,42 @@ func UpdateBook(c *gin.Context) {
 func ToggleFavorite(c *gin.Context) {
 	idParam := c.Param("id")
 	bookID, err := strconv.ParseUint(idParam, 10, 64)
+
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid book ID"})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid book ID",
+		})
 		return
 	}
 
 	var req struct {
 		UserID uint `json:"user_id"`
 	}
+
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request: missing user_id"})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid request",
+			"detail": err.Error(),
+		})
+		return
+	}
+
+	fmt.Printf("Toggle Favorite - BookID: %d, UserID: %d\n", bookID, req.UserID)
+
+	if req.UserID == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "user_id is required",
+		})
 		return
 	}
 
 	isFavorite, err := repository.ToggleFavorite(uint(bookID), req.UserID)
+
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to toggle favorite"})
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Failed to toggle favorite",
+			"detail": err.Error(),
+		})
 		return
 	}
 
