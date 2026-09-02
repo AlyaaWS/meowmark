@@ -13,12 +13,99 @@
     display: flex;
     flex-direction: column;
 
-    background: #f3e4c9;
-
+    /* Default: yellow */
+    background: #F3E4C9;
     color: #111844;
 
     overflow: hidden;
+
+    transition:
+        background 0.25s ease,
+        color 0.25s ease;
 }
+
+
+/* =====================================================
+   THEME: YELLOW
+===================================================== */
+
+.reader-container.theme-yellow {
+    background: #F3E4C9;
+    color: #111844;
+}
+
+
+/* =====================================================
+   THEME: SAGE
+===================================================== */
+
+.reader-container.theme-sage {
+    background: #D3D4C0;
+    color: #1a1a1a;
+}
+
+.reader-container.theme-sage .reader-header {
+    background: rgba(211, 212, 192, 0.95);
+    border-bottom-color: rgba(0, 0, 0, 0.08);
+}
+
+.reader-container.theme-sage .reader-page-number,
+.reader-container.theme-sage .reading-page,
+.reader-container.theme-sage .reader-heading {
+    color: #1a1a1a;
+}
+
+
+/* =====================================================
+   THEME: NAVY
+===================================================== */
+
+.reader-container.theme-navy {
+    background: #111844;
+    color: #ffffff;
+}
+
+.reader-container.theme-navy .reader-header {
+    background: rgba(17, 24, 68, 0.95);
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.reader-container.theme-navy .reader-page-number {
+    color: #ffffff;
+}
+
+.reader-container.theme-navy .reading-page,
+.reader-container.theme-navy .reader-heading {
+    color: #ffffff;
+}
+
+.reader-container.theme-navy .reader-page-button {
+    background: #292929;
+    color: #ffffff;
+}
+
+.reader-container.theme-navy .reader-controls {
+    background: #ffffff;
+}
+
+.reader-container.theme-navy .font-button {
+    color: #111844;
+}
+
+.reader-container.theme-navy .font-size {
+    color: #111844;
+}
+
+.reader-container.theme-navy .loading-spinner {
+    border-color: rgba(255, 255, 255, 0.15);
+    border-top-color: #ffffff;
+}
+
+.reader-container.theme-navy .reader-loading {
+    color: #ffffff;
+}
+
+
 
 
 /* =====================================================
@@ -43,13 +130,70 @@
 
     padding: 0 18px;
 
+    /* Default yellow header */
     background: rgba(243, 228, 201, 0.95);
 
     backdrop-filter: blur(12px);
 
     border-bottom: 1px solid rgba(17, 24, 68, 0.08);
+
+    transition:
+        background 0.25s ease,
+        border-color 0.25s ease;
 }
 
+
+/* =====================================================
+   THEME BUTTON IN HEADER
+===================================================== */
+
+.reader-theme-button {
+    width: 38px;
+    height: 38px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.reader-theme-button:hover {
+    background: rgba(17, 24, 68, 0.08);
+    transform: scale(1.06);
+}
+
+.reader-theme-icon {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+}
+
+.reader-container.theme-navy .reader-theme-icon {
+    filter: brightness(0) saturate(100%) invert(90%) sepia(60%) saturate(400%) hue-rotate(5deg) brightness(105%);
+}
+
+
+
+
+/* =====================================================
+   REMOVE MEOWMARK / BRAND
+===================================================== */
+
+.reader-brand,
+.reader-title,
+.reader-logo,
+.meowmark-title,
+.meowmark-logo {
+    display: none !important;
+}
+
+
+/* =====================================================
+   PAGE NUMBER
+===================================================== */
 
 .reader-page-number {
     min-width: 70px;
@@ -63,8 +207,21 @@
     letter-spacing: 0.3px;
 
     color: #111844;
+
+    transition: color 0.25s ease;
 }
 
+
+.reader-container.dark .reader-page-number,
+.reader-container.dark-theme .reader-page-number,
+.reader-container[data-theme="dark"] .reader-page-number {
+    color: #eeeeee;
+}
+
+
+/* =====================================================
+   HEADER BUTTON
+===================================================== */
 
 .reader-header-button {
     width: 38px;
@@ -94,7 +251,8 @@
 
     transition:
         transform 0.15s ease,
-        background 0.15s ease;
+        background 0.25s ease,
+        color 0.25s ease;
 }
 
 
@@ -119,6 +277,20 @@
 }
 
 
+/* DARK HEADER BUTTON */
+
+.reader-container.dark .reader-header-button,
+.reader-container.dark-theme .reader-header-button,
+.reader-container[data-theme="dark"] .reader-header-button {
+    background: #292929;
+
+    color: #ffffff;
+
+    box-shadow:
+        0 3px 12px rgba(0, 0, 0, 0.35);
+}
+
+
 /* =====================================================
    READING AREA
 ===================================================== */
@@ -132,17 +304,22 @@
     overflow-x: hidden;
 
     padding:
-        32px 20px 110px;
+        32px 20px 130px;
 
     scroll-behavior: smooth;
 
     box-sizing: border-box;
+
+    background: transparent;
+
+    transition:
+        background 0.25s ease;
 }
 
 
-/*
-   Scrollbar
-*/
+/* =====================================================
+   SCROLLBAR
+===================================================== */
 
 .reading-area::-webkit-scrollbar {
     width: 7px;
@@ -158,6 +335,13 @@
     background: rgba(17, 24, 68, 0.18);
 
     border-radius: 20px;
+}
+
+
+.reader-container.dark .reading-area::-webkit-scrollbar-thumb,
+.reader-container.dark-theme .reading-area::-webkit-scrollbar-thumb,
+.reader-container[data-theme="dark"] .reading-area::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
 }
 
 
@@ -190,6 +374,20 @@
     word-break: normal;
 
     white-space: normal;
+
+    color: #111844;
+
+    transition:
+        color 0.25s ease;
+}
+
+
+/* DARK TEXT */
+
+.reader-container.dark .reading-page,
+.reader-container.dark-theme .reading-page,
+.reader-container[data-theme="dark"] .reading-page {
+    color: #eeeeee;
 }
 
 
@@ -214,10 +412,9 @@
 }
 
 
-/*
-   Paragraf yang dari PDF terlihat
-   menjorok.
-*/
+/* =====================================================
+   PARAGRAPH INDENT
+===================================================== */
 
 .reader-paragraph.has-indent {
     text-indent: 2em;
@@ -250,12 +447,22 @@
     color: #111844;
 
     overflow-wrap: break-word;
+
+    transition:
+        color 0.25s ease;
 }
 
 
-/*
-   Kalau BAB muncul setelah heading
-*/
+.reader-container.dark .reader-heading,
+.reader-container.dark-theme .reader-heading,
+.reader-container[data-theme="dark"] .reader-heading {
+    color: #ffffff;
+}
+
+
+/* =====================================================
+   HEADING + PARAGRAPH
+===================================================== */
 
 .reader-heading+.reader-paragraph {
     margin-top: 0.5em;
@@ -277,6 +484,13 @@
         Georgia,
         "Times New Roman",
         serif;
+}
+
+
+.reader-container.dark .empty-text,
+.reader-container.dark-theme .empty-text,
+.reader-container[data-theme="dark"] .empty-text {
+    color: #aaa;
 }
 
 
@@ -306,6 +520,13 @@
 }
 
 
+.reader-container.dark .reader-loading,
+.reader-container.dark-theme .reader-loading,
+.reader-container[data-theme="dark"] .reader-loading {
+    color: #ffffff;
+}
+
+
 .loading-spinner {
     width: 28px;
     height: 28px;
@@ -321,6 +542,15 @@
 }
 
 
+.reader-container.dark .loading-spinner,
+.reader-container.dark-theme .loading-spinner,
+.reader-container[data-theme="dark"] .loading-spinner {
+    border-color: rgba(255, 255, 255, 0.15);
+
+    border-top-color: #ffffff;
+}
+
+
 @keyframes reader-spin {
 
     to {
@@ -331,19 +561,170 @@
 
 
 /* =====================================================
+   FIXED PAGE ARROWS
+   TIDAK IKUT SCROLL
+===================================================== */
+
+.reader-page-button {
+    position: fixed !important;
+
+    top: 50% !important;
+
+    width: 42px;
+    height: 42px;
+
+    padding: 0;
+
+    margin: 0;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: #ffffff;
+
+    color: #111844;
+
+    font-size: 30px;
+
+    line-height: 1;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+
+    z-index: 9999 !important;
+
+    box-shadow:
+        0 4px 15px rgba(0, 0, 0, 0.15);
+
+    transition:
+        transform 0.15s ease,
+        background 0.2s ease,
+        color 0.2s ease,
+        opacity 0.2s ease;
+}
+
+
+
+.reader-page-button:hover {
+    transform: translateY(-50%) scale(1.08);
+}
+
+
+.reader-page-button:active {
+    transform: translateY(-50%) scale(0.92);
+}
+
+
+.reader-page-button:disabled {
+    opacity: 0.25;
+
+    cursor: default;
+
+    pointer-events: none;
+}
+
+
+/* LEFT */
+
+.reader-page-button-left {
+    left: 18px !important;
+
+    right: auto !important;
+
+    transform: translateY(-50%);
+}
+
+
+/* RIGHT */
+
+.reader-page-button-right {
+    right: 18px !important;
+
+    left: auto !important;
+
+    transform: translateY(-50%);
+}
+
+
+
+/* =====================================================
+   REMOVE OLD FLIPBOOK ARROWS
+   Supaya tidak muncul DOUBLE
+===================================================== */
+
+.flip-left,
+.flip-right {
+    display: none !important;
+}
+
+
+/* =====================================================
+   PAGE COUNTER
+===================================================== */
+
+.page-counter {
+    position: fixed;
+
+    top: 70px;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    z-index: 1000;
+
+    padding:
+        5px 12px;
+
+    border-radius: 20px;
+
+    background: rgba(255, 255, 255, 0.9);
+
+    color: #111844;
+
+    font-family:
+        Arial,
+        sans-serif;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    box-shadow:
+        0 3px 12px rgba(0, 0, 0, 0.08);
+
+    pointer-events: none;
+}
+
+
+.reader-container.dark .page-counter,
+.reader-container.dark-theme .page-counter,
+.reader-container[data-theme="dark"] .page-counter {
+    background: rgba(45, 45, 45, 0.95);
+
+    color: #ffffff;
+}
+
+
+/* =====================================================
    ZOOM / FONT CONTROL
 ===================================================== */
 
 .reader-controls {
-    position: fixed;
+    position: fixed !important;
 
     left: 50%;
 
-    bottom: 22px;
+    bottom: 78px !important;
 
     transform: translateX(-50%);
 
-    z-index: 100;
+    z-index: 9998 !important;
 
     height: 46px;
 
@@ -364,6 +745,10 @@
         0 8px 25px rgba(17, 24, 68, 0.25);
 }
 
+
+/* =====================================================
+   FONT BUTTON
+===================================================== */
 
 .font-button {
     width: 38px;
@@ -410,6 +795,10 @@
     cursor: default;
 }
 
+
+/* =====================================================
+   FONT SIZE
+===================================================== */
 
 .font-size {
     min-width: 42px;
@@ -486,7 +875,7 @@
 
     .reading-area {
         padding:
-            50px 40px 120px;
+            50px 40px 140px;
     }
 
 
@@ -502,6 +891,22 @@
         line-height: 1.8;
     }
 
+
+    .reader-page-button-left {
+        left: 25px !important;
+    }
+
+
+    .reader-page-button-right {
+        right: 25px !important;
+    }
+
+
+
+    .reader-controls {
+        bottom: 78px !important;
+    }
+
 }
 
 
@@ -510,6 +915,11 @@
 ===================================================== */
 
 @media (max-width: 600px) {
+
+    .reader-container {
+        min-height: 100dvh;
+    }
+
 
     .reader-header {
         height: 52px;
@@ -534,7 +944,7 @@
 
     .reading-area {
         padding:
-            28px 20px 100px;
+            28px 20px 130px;
     }
 
 
@@ -563,8 +973,110 @@
     }
 
 
+    /* ================================================
+       MOBILE ARROW
+    ================================================ */
+
+    .reader-page-button {
+        width: 38px;
+        height: 38px;
+
+        font-size: 27px;
+    }
+
+
+    .reader-page-button-left {
+        left: 10px !important;
+    }
+
+
+    .reader-page-button-right {
+        right: 10px !important;
+    }
+
+
+
+    /* ================================================
+       MOBILE PAGE COUNTER
+    ================================================ */
+
+    .page-counter {
+        top: 62px;
+
+        font-size: 11px;
+
+        padding:
+            4px 10px;
+    }
+
+
+    /* ================================================
+       MOBILE ZOOM
+       Ditaruh di atas navbar
+    ================================================ */
+
     .reader-controls {
-        bottom: 18px;
+        bottom: 76px !important;
+
+        height: 42px;
+
+        padding:
+            3px 6px;
+
+        gap: 4px;
+    }
+
+
+    .font-button {
+        width: 34px;
+        height: 34px;
+
+        font-size: 21px;
+    }
+
+
+    .font-size {
+        min-width: 38px;
+
+        font-size: 11px;
+    }
+
+}
+
+
+/* =====================================================
+   VERY SMALL MOBILE
+===================================================== */
+
+@media (max-width: 380px) {
+
+    .reading-area {
+        padding:
+            24px 16px 125px;
+    }
+
+
+    .reader-page-button {
+        width: 36px;
+        height: 36px;
+
+        font-size: 25px;
+    }
+
+
+    .reader-page-button-left {
+        left: 7px !important;
+    }
+
+
+    .reader-page-button-right {
+        right: 7px !important;
+    }
+
+
+
+    .reader-controls {
+        bottom: 72px !important;
     }
 
 }

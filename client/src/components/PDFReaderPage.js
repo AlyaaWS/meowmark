@@ -57,74 +57,19 @@ function PDFReaderPage({ selectedBook, onHome, onLibrary, onAddBook }) {
   );
 
 
-  /* =====================
-     PAGE
-  ===================== */
-
-  const previousPage = (event) => {
+  const cycleTheme = (event) => {
     event.stopPropagation();
-
     wakeReader();
-
-    if (currentPage > 1) {
-      setCurrentPage((page) => page - 1);
-    }
-  };
-
-  const nextPage = (event) => {
-    event.stopPropagation();
-
-    wakeReader();
-
-    if (currentPage < totalPage) {
-      setCurrentPage((page) => page + 1);
-    }
+    setShowThemeModal(true);
   };
 
   return (
     <main className={`reader-page ${readerTheme}`} onClick={wakeReader}>
       {/* =====================
-          HEADER
-      ===================== */}
-
-      {showControls && (
-        <header className="reader-header">
-          <button
-            className="theme-button"
-            onClick={(event) => {
-              event.stopPropagation();
-
-              wakeReader();
-
-              setShowThemeModal(true);
-            }}
-          >
-            <img src={themeIcon} alt="Theme" className="theme-icon" />
-          </button>
-        </header>
-      )}
-
-      {/* =====================
-          PAGE NUMBER
-      ===================== */}
-
-      {showControls && (
-        <div className="reader-page-number">
-          {currentPage}/{totalPage}
-        </div>
-      )}
-
-      {/* =====================
           PDF
       ===================== */}
 
       <section className="reader-content">
-        {showControls && (
-          <button className="reader-arrow left" onClick={previousPage}>
-            ❮
-          </button>
-        )}
-
         <FlipBook
           pdfUrl={
             selectedBook?.pdf
@@ -134,14 +79,11 @@ function PDFReaderPage({ selectedBook, onHome, onLibrary, onAddBook }) {
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
           wakeReader={wakeReader}
+          theme={readerTheme}
+          showControls={showControls}
+          themeIcon={themeIcon}
+          onThemeClick={cycleTheme}
         />
-
-
-        {showControls && (
-          <button className="reader-arrow right" onClick={nextPage}>
-            ❯
-          </button>
-        )}
       </section>
 
       {/* =====================
