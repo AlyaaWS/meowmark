@@ -1,80 +1,570 @@
-.flipbook-container{
+/* =====================================================
+   MAIN READER
+===================================================== */
 
-    position:relative;
+.reader-container {
+    position: relative;
 
-    width:100%;
+    width: 100%;
+    height: 100%;
 
-    display:flex;
+    min-height: 100vh;
 
-    justify-content:center;
+    display: flex;
+    flex-direction: column;
 
-    align-items:center;
+    background: #f3e4c9;
 
+    color: #111844;
+
+    overflow: hidden;
 }
 
-.flip-page{
 
-    width:82%;
+/* =====================================================
+   HEADER
+===================================================== */
 
-    height:640px;
+.reader-header {
+    position: sticky;
 
-    background:white;
+    top: 0;
 
-    border-radius:10px;
+    z-index: 50;
+
+    height: 58px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 18px;
+
+    background: rgba(243, 228, 201, 0.95);
+
+    backdrop-filter: blur(12px);
+
+    border-bottom: 1px solid rgba(17, 24, 68, 0.08);
+}
+
+
+.reader-page-number {
+    min-width: 70px;
+
+    text-align: center;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    letter-spacing: 0.3px;
+
+    color: #111844;
+}
+
+
+.reader-header-button {
+    width: 38px;
+    height: 38px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: #ffffff;
+
+    color: #111844;
+
+    font-size: 28px;
+
+    line-height: 1;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
 
     box-shadow:
-        0 8px 25px rgba(0,0,0,.15);
+        0 3px 12px rgba(17, 24, 68, 0.12);
 
-    overflow:hidden;
+    transition:
+        transform 0.15s ease,
+        background 0.15s ease;
+}
 
-    transform-style:preserve-3d;
+
+.reader-header-button:hover {
+    transform: scale(1.06);
+
+    background: #fafafa;
+}
+
+
+.reader-header-button:active {
+    transform: scale(0.94);
+}
+
+
+.reader-header-button:disabled {
+    opacity: 0.25;
+
+    cursor: default;
+
+    transform: none;
+}
+
+
+/* =====================================================
+   READING AREA
+===================================================== */
+
+.reading-area {
+    flex: 1;
+
+    width: 100%;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    padding:
+        32px 20px 110px;
+
+    scroll-behavior: smooth;
+
+    box-sizing: border-box;
+}
+
+
+/*
+   Scrollbar
+*/
+
+.reading-area::-webkit-scrollbar {
+    width: 7px;
+}
+
+
+.reading-area::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+
+.reading-area::-webkit-scrollbar-thumb {
+    background: rgba(17, 24, 68, 0.18);
+
+    border-radius: 20px;
+}
+
+
+/* =====================================================
+   PAGE
+===================================================== */
+
+.reading-page {
+    width: 100%;
+
+    max-width: 720px;
+
+    margin: 0 auto;
+
+    box-sizing: border-box;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    line-height: 1.75;
+
+    letter-spacing: 0;
+
+    word-spacing: 0.02em;
+
+    overflow-wrap: break-word;
+
+    word-break: normal;
+
+    white-space: normal;
+}
+
+
+/* =====================================================
+   PARAGRAPH
+===================================================== */
+
+.reader-paragraph {
+    margin: 0 0 1.15em;
+
+    padding: 0;
+
+    text-align: justify;
+
+    text-justify: inter-word;
+
+    hyphens: auto;
+
+    overflow-wrap: break-word;
+
+    word-break: normal;
+}
+
+
+/*
+   Paragraf yang dari PDF terlihat
+   menjorok.
+*/
+
+.reader-paragraph.has-indent {
+    text-indent: 2em;
+}
+
+
+/* =====================================================
+   HEADING / BAB
+===================================================== */
+
+.reader-heading {
+    margin:
+        2em 0 1.2em;
+
+    padding: 0;
+
+    text-align: center;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 1.45em;
+
+    line-height: 1.3;
+
+    font-weight: 700;
+
+    color: #111844;
+
+    overflow-wrap: break-word;
+}
+
+
+/*
+   Kalau BAB muncul setelah heading
+*/
+
+.reader-heading+.reader-paragraph {
+    margin-top: 0.5em;
+}
+
+
+/* =====================================================
+   EMPTY
+===================================================== */
+
+.empty-text {
+    text-align: center;
+
+    margin-top: 100px;
+
+    color: #777;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+}
+
+
+/* =====================================================
+   LOADING
+===================================================== */
+
+.reader-loading {
+    min-height: 300px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 14px;
+
+    color: #111844;
+
+    font-family:
+        Arial,
+        sans-serif;
+
+    font-size: 14px;
+}
+
+
+.loading-spinner {
+    width: 28px;
+    height: 28px;
+
+    border-radius: 50%;
+
+    border: 3px solid rgba(17, 24, 68, 0.15);
+
+    border-top-color: #111844;
+
+    animation:
+        reader-spin 0.8s linear infinite;
+}
+
+
+@keyframes reader-spin {
+
+    to {
+        transform: rotate(360deg);
+    }
 
 }
 
-.dummy-page{
 
-    width:100%;
+/* =====================================================
+   ZOOM / FONT CONTROL
+===================================================== */
 
-    height:100%;
+.reader-controls {
+    position: fixed;
 
-    display:flex;
+    left: 50%;
 
-    flex-direction:column;
+    bottom: 22px;
 
-    justify-content:center;
+    transform: translateX(-50%);
 
-    align-items:center;
+    z-index: 100;
+
+    height: 46px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding:
+        4px 8px;
+
+    border-radius: 24px;
+
+    background: #111844;
+
+    box-shadow:
+        0 8px 25px rgba(17, 24, 68, 0.25);
+}
+
+
+.font-button {
+    width: 38px;
+    height: 38px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: transparent;
+
+    color: white;
+
+    font-size: 23px;
+
+    line-height: 1;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+
+    transition:
+        background 0.15s ease,
+        transform 0.15s ease;
+}
+
+
+.font-button:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+
+.font-button:active {
+    transform: scale(0.9);
+}
+
+
+.font-button:disabled {
+    opacity: 0.3;
+
+    cursor: default;
+}
+
+
+.font-size {
+    min-width: 42px;
+
+    text-align: center;
+
+    color: white;
+
+    font-size: 12px;
+
+    font-family:
+        Arial,
+        sans-serif;
+
+    font-weight: 600;
+}
+
+
+/* =====================================================
+   ERROR
+===================================================== */
+
+.pdf-error {
+    width: 100%;
+
+    min-height: 300px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    padding: 30px;
+
+    box-sizing: border-box;
+
+    text-align: center;
+
+    color: #111844;
+
+    font-family:
+        Arial,
+        sans-serif;
+}
+
+
+.pdf-error p {
+    margin: 0;
+
+    font-size: 16px;
+
+    font-weight: 600;
+}
+
+
+.pdf-error small {
+    color: #777;
+
+    font-size: 12px;
+
+    word-break: break-all;
+}
+
+
+/* =====================================================
+   DESKTOP
+===================================================== */
+
+@media (min-width: 768px) {
+
+    .reading-area {
+        padding:
+            50px 40px 120px;
+    }
+
+
+    .reading-page {
+        max-width: 760px;
+
+        padding:
+            20px 30px;
+    }
+
+
+    .reader-paragraph {
+        line-height: 1.8;
+    }
 
 }
 
-.flip-left{
 
-    position:absolute;
+/* =====================================================
+   MOBILE
+===================================================== */
 
-    left:0;
+@media (max-width: 600px) {
 
-    width:30%;
+    .reader-header {
+        height: 52px;
 
-    height:100%;
+        padding:
+            0 12px;
+    }
 
-    z-index:20;
 
-    cursor:pointer;
+    .reader-header-button {
+        width: 36px;
+        height: 36px;
 
-}
+        font-size: 25px;
+    }
 
-.flip-right{
 
-    position:absolute;
+    .reader-page-number {
+        font-size: 13px;
+    }
 
-    right:0;
 
-    width:30%;
+    .reading-area {
+        padding:
+            28px 20px 100px;
+    }
 
-    height:100%;
 
-    z-index:20;
+    .reading-page {
+        width: 100%;
 
-    cursor:pointer;
+        max-width: none;
+
+        padding: 0;
+    }
+
+
+    .reader-paragraph {
+        line-height: 1.75;
+
+        margin-bottom: 1.1em;
+
+        text-align: justify;
+    }
+
+
+    .reader-heading {
+        font-size: 1.4em;
+
+        margin-top: 1.7em;
+    }
+
+
+    .reader-controls {
+        bottom: 18px;
+    }
 
 }

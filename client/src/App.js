@@ -164,7 +164,10 @@ function App() {
         onLibrary={() => setCurrentPage("library")}
         onAddBook={() => setCurrentPage("addBook")}
         onProfile={() => setCurrentPage("profile")}
-        onReadBook={() => setCurrentPage("reader")}
+        onReadBook={(book) => {
+          setSelectedBook(book);
+          setCurrentPage("reader");
+        }}
         onEditBook={(book) => {
           setSelectedBook(book);
           setCurrentPage("editBook");

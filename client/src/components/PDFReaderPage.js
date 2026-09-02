@@ -47,6 +47,16 @@ function PDFReaderPage({ selectedBook, onHome, onLibrary, onAddBook }) {
     setShowControls(true);
   };
 
+  console.log("SELECTED BOOK:", selectedBook);
+  console.log("PDF PATH:", selectedBook?.pdf);
+  console.log(
+    "PDF URL:",
+    selectedBook?.pdf
+      ? `http://localhost:8080${selectedBook.pdf}`
+      : null
+  );
+
+
   /* =====================
      PAGE
   ===================== */
@@ -116,11 +126,16 @@ function PDFReaderPage({ selectedBook, onHome, onLibrary, onAddBook }) {
         )}
 
         <FlipBook
+          pdfUrl={
+            selectedBook?.pdf
+              ? `http://localhost:8080${selectedBook.pdf}`
+              : null
+          }
           currentPage={currentPage}
-          totalPage={totalPage}
           setCurrentPage={setCurrentPage}
           wakeReader={wakeReader}
         />
+
 
         {showControls && (
           <button className="reader-arrow right" onClick={nextPage}>
@@ -154,9 +169,8 @@ function PDFReaderPage({ selectedBook, onHome, onLibrary, onAddBook }) {
             </h2>
 
             <button
-              className={`theme-option ${
-                readerTheme === "yellow" ? "active" : ""
-              }`}
+              className={`theme-option ${readerTheme === "yellow" ? "active" : ""
+                }`}
               onClick={() => {
                 setReaderTheme("yellow");
                 setShowThemeModal(false);
@@ -167,9 +181,8 @@ function PDFReaderPage({ selectedBook, onHome, onLibrary, onAddBook }) {
             </button>
 
             <button
-              className={`theme-option ${
-                readerTheme === "navy" ? "active" : ""
-              }`}
+              className={`theme-option ${readerTheme === "navy" ? "active" : ""
+                }`}
               onClick={() => {
                 setReaderTheme("navy");
                 setShowThemeModal(false);
@@ -180,9 +193,8 @@ function PDFReaderPage({ selectedBook, onHome, onLibrary, onAddBook }) {
             </button>
 
             <button
-              className={`theme-option ${
-                readerTheme === "sage" ? "active" : ""
-              }`}
+              className={`theme-option ${readerTheme === "sage" ? "active" : ""
+                }`}
               onClick={() => {
                 setReaderTheme("sage");
                 setShowThemeModal(false);

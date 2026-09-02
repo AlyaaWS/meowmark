@@ -250,22 +250,20 @@ function LibraryPage({
                   <button
                     type="button"
                     className={
-                      (book.is_favorite || book.isFavorite === true)
+                      book.is_favorite === true
                         ? "favorite-button active"
                         : "favorite-button"
                     }
-                    aria-label={
-                      (book.is_favorite || book.isFavorite === true)
-                        ? `Hapus ${book.title} dari Favorite`
-                        : `Tambahkan ${book.title} ke Favorite`
-                    }
                     onClick={(event) => {
+                      event.preventDefault();
                       event.stopPropagation();
+
+                      console.log("FAVORITE DIKLIK:", book.ID, book.title);
 
                       handleFavorite(book.ID);
                     }}
                   >
-                    {(book.is_favorite || book.isFavorite === true) ? "♥" : "♡"}
+                    {book.is_favorite === true ? "♥" : "♡"}
                   </button>
                 </div>
               </article>
@@ -291,7 +289,7 @@ function LibraryPage({
         }}
         onRead={() => {
           setShowPopup(false);
-          onReadBook();
+          onReadBook(selectedBook);
         }}
         onDetail={() => {
           setShowPopup(false);
