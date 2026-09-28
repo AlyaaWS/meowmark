@@ -18,6 +18,12 @@ function EditBookPage({ selectedBook, onBack, onSave, onProfile}) {
   const [category, setCategory] = useState(
     selectedBook?.category || "Non Fiction",
   );
+  
+  // Periksa apakah kategori awal ini adalah kategori custom yang tidak ada di list
+  const predefinedCategories = ["Fiction", "Non Fiction", "Comedy", "Romance", "Horror"];
+  const isInitialCustom = !predefinedCategories.includes(selectedBook?.category || "Non Fiction");
+  
+  const [isCustomCategory, setIsCustomCategory] = useState(isInitialCustom);
 
   const [currentPage, setCurrentPage] = useState(
     selectedBook?.current_page ?? selectedBook?.currentPage ?? 0,
@@ -33,45 +39,68 @@ function EditBookPage({ selectedBook, onBack, onSave, onProfile}) {
     selectedBook?.fileName || selectedBook?.pdf || "No PDF Selected",
   );
 
+  const [coverFile, setCoverFile] = useState(null);
+  const [pdfFile, setPdfFile] = useState(null);
+
   const handleCoverChange = (event) => {
     const file = event.target.files?.[0];
 
     if (!file) return;
 
     setCoverPreview(URL.createObjectURL(file));
+    setCoverFile(file);
   };
 
-  const handlePdfChange = (event) => {
+  const handlePdfChange = async (event) => {
     const file = event.target.files?.[0];
 
     if (!file) return;
 
     setBookFileName(file.name);
+    setPdfFile(file);
+
+    try {
+      const fileUrl = URL.createObjectURL(file);
+      const { pdfjs } = await import("react-pdf");
+      pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+      
+      const loadingTask = pdfjs.getDocument(fileUrl);
+      const pdf = await loadingTask.promise;
+      setTotalPage(pdf.numPages);
+    } catch (err) {
+      console.error("Gagal membaca jumlah halaman PDF:", err);
+    }
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const updatedData = {
-      title,
-      author,
-      description,
-      review,
-      category,
-      current_page: currentPage,
-      total_page: totalPage,
-      pdf: bookFileName,
-      cover: coverPreview,
-      user_id: Number(localStorage.getItem("userId"))
-    };
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("author", author);
+    formData.append("description", description);
+    formData.append("review", review);
+    formData.append("category", category);
+    formData.append("current_page", currentPage);
+    formData.append("total_page", totalPage);
+    formData.append("user_id", Number(localStorage.getItem("userId")));
+
+    if (coverFile) {
+      formData.append("cover", coverFile);
+    } else {
+      formData.append("existing_cover", selectedBook?.cover || "");
+    }
+
+    if (pdfFile) {
+      formData.append("pdf", pdfFile);
+    } else {
+      formData.append("existing_pdf", selectedBook?.pdf || "");
+    }
 
     try {
       const response = await fetch(`http://localhost:8080/books/${selectedBook.ID}`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updatedData),
+        body: formData,
       });
 
       if (!response.ok) {
@@ -186,45 +215,55 @@ function EditBookPage({ selectedBook, onBack, onSave, onProfile}) {
         <div className="form-group">
           <label>Category</label>
 
-          <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-          >
-            <option>Fiction</option>
-
-            <option>Non Fiction</option>
-
-            <option>Comedy</option>
-
-            <option>Romance</option>
-
-            <option>Horror</option>
-          </select>
+          {isCustomCategory ? (
+            <div style={{ display: "flex", gap: "10px" }}>
+              <input
+                type="text"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                placeholder="Type new category..."
+                autoFocus
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  setIsCustomCategory(false);
+                  setCategory("Non Fiction");
+                }}
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  color: "var(--color-brown)",
+                  fontWeight: "bold",
+                  cursor: "pointer",
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          ) : (
+            <select
+              value={category}
+              onChange={(e) => {
+                if (e.target.value === "ADD_NEW") {
+                  setIsCustomCategory(true);
+                  setCategory("");
+                } else {
+                  setCategory(e.target.value);
+                }
+              }}
+            >
+              <option value="Fiction">Fiction</option>
+              <option value="Non Fiction">Non Fiction</option>
+              <option value="Comedy">Comedy</option>
+              <option value="Romance">Romance</option>
+              <option value="Horror">Horror</option>
+              <option value="ADD_NEW" style={{ fontWeight: "bold" }}>+ Tambah Kategori Baru...</option>
+            </select>
+          )}
         </div>
 
-        {/* PAGE */}
 
-        <div className="page-row">
-          <div className="form-group">
-            <label>Current Page</label>
-
-            <input
-              type="number"
-              value={currentPage}
-              onChange={(e) => setCurrentPage(Number(e.target.value))}
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Total Page</label>
-
-            <input
-              type="number"
-              value={totalPage}
-              onChange={(e) => setTotalPage(Number(e.target.value))}
-            />
-          </div>
-        </div>
 
         {/* BUTTON */}
 

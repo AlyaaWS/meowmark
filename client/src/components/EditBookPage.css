@@ -1,6 +1,6 @@
 .edit-page {
   width: 100%;
-  max-width: 430px;
+  max-width: 1200px;
   min-height: 100vh;
 
   margin: 0 auto;
@@ -286,11 +286,25 @@ textarea{
 ===================== */
 
 @media(max-width:430px){
-
-.edit-page{
-
-max-width:100%;
-
+  .edit-page{
+    max-width:100%;
+  }
 }
 
+@media(min-width: 768px){
+  .edit-form{
+    max-width: 600px;
+    margin: 0 auto;
+    padding-top: 40px;
+  }
+  
+  .cover-upload {
+    margin: 0 auto;
+  }
+
+  .save-button {
+    max-width: 300px;
+    margin: 10px auto 0 auto;
+    display: block;
+  }
 }

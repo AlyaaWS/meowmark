@@ -2,7 +2,7 @@
   position: relative;
 
   width: 100%;
-  max-width: 430px;
+  max-width: 1200px;
   height: 100vh;
 
   margin: 0 auto;
@@ -317,6 +317,31 @@
    RESPONSIVE
 ========================= */
 
+@media (min-width: 768px) {
+  .book-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .book-card {
+    height: auto;
+    min-height: 180px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .home-header {
+    padding-right: 60px;
+    padding-left: 60px;
+  }
+
+  .home-content {
+    padding-right: 60px;
+    padding-left: 60px;
+  }
+}
+
 @media (max-width: 360px) {
   .home-header {
     padding-right: 28px;
@@ -338,7 +363,6 @@
 
   .book-cover {
     left: 15px;
-
     width: 103px;
     height: 148px;
   }

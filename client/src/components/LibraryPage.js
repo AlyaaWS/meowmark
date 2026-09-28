@@ -43,12 +43,21 @@ function LibraryPage({
 
   const [activeCategory, setActiveCategory] = useState("All");
 
-  const categories = ["All", "Favorite", "Fiction", "Non Fiction", "Comedy"];
+  const [customCategories, setCustomCategories] = useState(() => {
+    const saved = localStorage.getItem("customCategories");
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  const dynamicCategories = Array.from(new Set(books.map(b => b.category).filter(Boolean)));
+  const combinedCategories = Array.from(new Set([...dynamicCategories, ...customCategories]));
+  const categories = ["All", "Favorite", ...combinedCategories];
   /* Isi kolom pencarian */
 
   const [search, setSearch] = useState("");
 
   const [showPopup, setShowPopup] = useState(false);
+  const [showCategoryPopup, setShowCategoryPopup] = useState(false);
+  const [newCategoryInput, setNewCategoryInput] = useState("");
 
   const [selectedBook, setSelectedBook] = useState(null);
 
@@ -58,6 +67,15 @@ function LibraryPage({
       onRefreshBooks();
     }
   }, [onRefreshBooks]);
+
+  // Encode path agar spasi & karakter khusus di nama file tidak merusak URL
+  const buildFileUrl = (path) => {
+    if (!path) return null;
+    if (path.startsWith("http") || path.startsWith("blob:") || path.startsWith("data:")) return path;
+    const parts = path.split("/");
+    const encodedParts = parts.map((part) => encodeURIComponent(part));
+    return `http://localhost:8080${encodedParts.join("/")}`;
+  };
 
   const handleFavorite = async (bookId) => {
     const userId = Number(localStorage.getItem("userId"));
@@ -177,10 +195,84 @@ function LibraryPage({
               }}
             >
               {category}
+              {customCategories.includes(category) && (
+                <span
+                  style={{
+                    marginLeft: "8px",
+                    fontWeight: "bold",
+                    color: "var(--color-brown)",
+                    cursor: "pointer"
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const updatedCustom = customCategories.filter(c => c !== category);
+                    setCustomCategories(updatedCustom);
+                    localStorage.setItem("customCategories", JSON.stringify(updatedCustom));
+                    if (activeCategory === category) {
+                      setActiveCategory("All");
+                    }
+                  }}
+                >
+                  &times;
+                </span>
+              )}
             </button>
           ))}
+          <button
+            type="button"
+            className="category-button"
+            onClick={() => setShowCategoryPopup(true)}
+          >
+            +
+          </button>
         </div>
       </header>
+
+      {/* MODAL TAMBAH KATEGORI */}
+      {showCategoryPopup && (
+        <div className="category-modal-overlay">
+          <div className="category-modal-content">
+            <h3 className="category-modal-title">Tambah Kategori Baru</h3>
+            <input
+              type="text"
+              className="category-modal-input"
+              value={newCategoryInput}
+              onChange={(e) => setNewCategoryInput(e.target.value)}
+              placeholder="Contoh: Manga, Resep..."
+              autoFocus
+            />
+            <div className="category-modal-actions">
+              <button
+                className="category-modal-btn cancel"
+                onClick={() => {
+                  setShowCategoryPopup(false);
+                  setNewCategoryInput("");
+                }}
+              >
+                Batal
+              </button>
+              <button
+                className="category-modal-btn add"
+                onClick={() => {
+                  if (newCategoryInput.trim() !== "") {
+                    const trimmed = newCategoryInput.trim();
+                    if (!categories.includes(trimmed)) {
+                      const updatedCustom = [...customCategories, trimmed];
+                      setCustomCategories(updatedCustom);
+                      localStorage.setItem("customCategories", JSON.stringify(updatedCustom));
+                      setActiveCategory(trimmed);
+                    }
+                  }
+                  setShowCategoryPopup(false);
+                  setNewCategoryInput("");
+                }}
+              >
+                Tambah
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* =====================
           KONTEN
@@ -231,7 +323,7 @@ function LibraryPage({
                 <div className="library-cover-wrapper">
                   {book.cover ? (
                     <img
-                      src={book.cover}
+                      src={buildFileUrl(book.cover)}
                       alt={`Cover ${book.title}`}
                       className="library-cover"
                     />

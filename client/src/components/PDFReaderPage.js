@@ -8,7 +8,7 @@ import themeIcon from "../assets/theme.png";
 
 import FlipBook from "./reader/FlipBook";
 
-function PDFReaderPage({ selectedBook, onHome, onLibrary, onAddBook }) {
+function PDFReaderPage({ selectedBook, onHome, onLibrary, onAddBook, onUpdateProgress }) {
   /* =====================
      STATE
   ===================== */
@@ -40,6 +40,44 @@ function PDFReaderPage({ selectedBook, onHome, onLibrary, onAddBook }) {
   }, [showControls]);
 
   /* =====================
+     SYNC PROGRESS
+  ===================== */
+
+  useEffect(() => {
+    if (!selectedBook) return;
+
+    const initialPage = selectedBook?.current_page ?? selectedBook?.currentPage ?? 1;
+    if (currentPage === initialPage) return;
+
+    const timer = setTimeout(async () => {
+      try {
+        const bookId = selectedBook.ID || selectedBook.id;
+        if (!bookId) return;
+
+        const updatedData = { 
+          ...selectedBook, 
+          current_page: currentPage,
+          user_id: Number(localStorage.getItem("userId")) || selectedBook.user_id
+        };
+        
+        await fetch(`http://localhost:8080/books/${bookId}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updatedData),
+        });
+
+        if (onUpdateProgress) {
+          onUpdateProgress(bookId, currentPage);
+        }
+      } catch (err) {
+        console.error("Gagal sinkronisasi progress:", err);
+      }
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, [currentPage, selectedBook, onUpdateProgress]);
+
+  /* =====================
      CONTROL
   ===================== */
 
@@ -49,12 +87,20 @@ function PDFReaderPage({ selectedBook, onHome, onLibrary, onAddBook }) {
 
   console.log("SELECTED BOOK:", selectedBook);
   console.log("PDF PATH:", selectedBook?.pdf);
-  console.log(
-    "PDF URL:",
-    selectedBook?.pdf
-      ? `http://localhost:8080${selectedBook.pdf}`
-      : null
-  );
+
+  // Encode PDF URL agar spasi & karakter khusus tidak merusak URL
+  const buildFileUrl = (path) => {
+    if (!path) return null;
+    if (path.startsWith("http") || path.startsWith("blob:") || path.startsWith("data:")) return path;
+    // path contoh: /uploads/1234567890_namafile.pdf
+    const parts = path.split("/");
+    const encodedParts = parts.map((part) => encodeURIComponent(part));
+    return `http://localhost:8080${encodedParts.join("/")}`;
+  };
+
+  const pdfUrl = buildFileUrl(selectedBook?.pdf);
+
+  console.log("PDF URL:", pdfUrl);
 
 
   const cycleTheme = (event) => {
@@ -71,11 +117,7 @@ function PDFReaderPage({ selectedBook, onHome, onLibrary, onAddBook }) {
 
       <section className="reader-content">
         <FlipBook
-          pdfUrl={
-            selectedBook?.pdf
-              ? `http://localhost:8080${selectedBook.pdf}`
-              : null
-          }
+          pdfUrl={pdfUrl}
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
           wakeReader={wakeReader}

@@ -2,7 +2,19 @@ import "./ProfilePage.css";
 import BottomNavbar from "./BottomNavbar";
 import profileImage from "../assets/cat-avatar.png";
 
-function ProfilePage({ userName, onHome, onLibrary, onAddBook, onLogout }) {
+function ProfilePage({ userName, books = [], onHome, onLibrary, onAddBook, onLogout }) {
+  const totalBooks = books.length;
+  const finishedBooks = books.filter(b => {
+    const total = b.total_page || b.totalPage || 1;
+    const current = b.current_page || b.currentPage || 0;
+    return current >= total && total > 0;
+  }).length;
+  const readingBooks = books.filter(b => {
+    const total = b.total_page || b.totalPage || 1;
+    const current = b.current_page || b.currentPage || 0;
+    return current > 0 && current < total;
+  }).length;
+
   return (
     <div className="profile-page">
       <div className="profile-content">
@@ -16,17 +28,17 @@ function ProfilePage({ userName, onHome, onLibrary, onAddBook, onLogout }) {
 
         <div className="profile-stats">
           <div className="stat-card">
-            <h1>7</h1>
+            <h1>{readingBooks}</h1>
             <p>Read</p>
           </div>
 
           <div className="stat-card">
-            <h1>16</h1>
+            <h1>{totalBooks}</h1>
             <p>Total Book</p>
           </div>
 
           <div className="stat-card">
-            <h1>8</h1>
+            <h1>{finishedBooks}</h1>
             <p>Finished</p>
           </div>
         </div>

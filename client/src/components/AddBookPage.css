@@ -5,7 +5,7 @@
 .add-page,
 .edit-page {
   width: 100%;
-  max-width: 430px;
+  max-width: 1200px;
   min-height: 100vh;
 
   margin: 0 auto;
@@ -184,6 +184,9 @@ textarea {
   align-items: center;
   justify-content: center;
 
+  /* Centered horizontally dalam container */
+  margin: 0 auto;
+
   border-radius: 18px;
 
   overflow: hidden;
@@ -233,9 +236,11 @@ textarea {
 
 .save-button {
   width: 100%;
+  max-width: 300px;
   height: 58px;
 
-  margin-top: 10px;
+  margin: 10px auto 0 auto;
+  display: block;
 
   border: none;
   border-radius: 18px;
@@ -272,5 +277,13 @@ textarea {
   .edit-page,
   .add-page {
     max-width: 100%;
+  }
+}
+
+@media (min-width: 768px) {
+  .edit-form {
+    max-width: 600px;
+    margin: 0 auto;
+    padding-top: 40px;
   }
 }

@@ -1,11 +1,13 @@
 .detail-page{
   width:100%;
-  max-width:430px;
+  max-width:1200px;
   min-height:100vh;
   margin:0 auto;
-  padding-bottom:120px;
+  padding-bottom: 120px;
   background:var(--color-cream);
   overflow-x:hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .detail-header{
@@ -46,7 +48,7 @@
 .detail-cover-section{
   position:relative;
   z-index:5;
-  margin-top:22px;
+  margin-top:48px;
   display:flex;
   justify-content:center;
 }
@@ -81,9 +83,9 @@
     position:relative;
     width:100%;
     margin:-58px 0 0;
-    padding:92px 22px 88px;
+    padding:92px 22px 60px;
     background:var(--color-primary);
-    border-radius:24px 24px 0 0;
+    border-radius:24px;
     box-sizing:border-box;
 }
 
@@ -410,3 +412,92 @@
   }
 
 }
+
+@media(min-width: 768px){
+  .detail-header{
+    padding: 60px 40px 0;
+  }
+  .detail-cover-section{
+    margin-top: 60px;
+  }
+  .detail-title{
+    font-size: 38px;
+  }
+  .detail-cover-wrapper{
+    width: 200px;
+    height: 300px;
+  }
+  .detail-card{
+    margin: -80px 20px 0;
+    width: calc(100% - 40px);
+    padding: 130px 40px 60px;
+  }
+  .detail-book-title{
+    font-size: 26px;
+  }
+  .detail-author{
+    font-size: 16px;
+  }
+  .star{
+    font-size: 58px;
+  }
+  .detail-description{
+    max-width: 500px;
+    font-size: 16px;
+  }
+  .detail-section-title{
+    font-size: 26px;
+  }
+  .review-box, .review-input{
+    font-size: 18px;
+    min-height: 200px;
+  }
+  .detail-edit-review {
+    width: 65px;
+    height: 65px;
+    font-size: 28px;
+  }
+}
+
+@media(min-width: 1024px){
+  .detail-header{
+    padding: 60px 60px 0;
+  }
+  .detail-cover-section{
+    margin-top: 80px;
+  }
+  .detail-cover-wrapper{
+    width: 240px;
+    height: 360px;
+  }
+  .detail-card{
+    margin: -100px 40px 0;
+    width: calc(100% - 80px);
+    padding: 160px 60px 80px;
+  }
+  .detail-book-title{
+    font-size: 32px;
+  }
+  .detail-author{
+    font-size: 18px;
+  }
+  .star{
+    font-size: 72px;
+  }
+  .detail-description{
+    max-width: 650px;
+    font-size: 18px;
+  }
+  .detail-section-title{
+    font-size: 30px;
+  }
+  .review-box, .review-input{
+    font-size: 20px;
+    min-height: 250px;
+  }
+  .detail-edit-review {
+    width: 75px;
+    height: 75px;
+    font-size: 32px;
+  }
+}

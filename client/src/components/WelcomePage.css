@@ -4,6 +4,7 @@
 
   display: flex;
   justify-content: center;
+  align-items: center;
 
   background-color: var(--color-primary);
 }
@@ -13,10 +14,8 @@
 .welcome-content {
   width: 100%;
   max-width: 430px;
-  min-height: 100vh;
 
   padding: 45px 28px 50px;
-  margin-top: 10px;
 
   display: flex;
   flex-direction: column;

@@ -226,6 +226,10 @@ function App() {
         onLibrary={() => setCurrentPage("library")}
         onAddBook={() => setCurrentPage("addBook")}
         onProfile={() => setCurrentPage("profile")}
+        onEditBook={(book) => {
+          setSelectedBook(book);
+          setCurrentPage("editBook");
+        }}
       />
     );
   }
@@ -240,6 +244,15 @@ function App() {
         onLibrary={() => setCurrentPage("library")}
         onAddBook={() => setCurrentPage("addBook")}
         onProfile={() => setCurrentPage("profile")}
+        onUpdateProgress={(bookId, newPage) => {
+          setBooks((prevBooks) =>
+            prevBooks.map((b) =>
+              b.ID === bookId || b.id === bookId
+                ? { ...b, current_page: newPage, UpdatedAt: new Date().toISOString() }
+                : b
+            )
+          );
+        }}
       />
     );
   }
@@ -250,6 +263,7 @@ function App() {
     return (
       <ProfilePage
         userName={userName}
+        books={books}
         onHome={() => setCurrentPage("home")}
         onLibrary={() => setCurrentPage("library")}
         onAddBook={() => setCurrentPage("addBook")}

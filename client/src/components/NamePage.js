@@ -103,8 +103,6 @@ function NamePage({ onSave }) {
 
         <button type="button" className="save-button" onClick={handleSave}>
           <span>Save</span>
-
-          <span className="save-arrow">›</span>
         </button>
 
         {/* Popup */}

@@ -12,7 +12,19 @@ function HomePage({ userName, books = [], onHome, onLibrary, onAddBook, onProfil
 
   const bookListRef = useRef(null);
 
-  const displayBooks = books;
+  const sortedBooks = [...books].sort((a, b) => {
+    return new Date(b.UpdatedAt || 0) - new Date(a.UpdatedAt || 0);
+  });
+  const displayBooks = sortedBooks.slice(0, 10);
+
+  // Encode path agar spasi & karakter khusus di nama file tidak merusak URL
+  const buildFileUrl = (path) => {
+    if (!path) return null;
+    if (path.startsWith("http") || path.startsWith("blob:") || path.startsWith("data:")) return path;
+    const parts = path.split("/");
+    const encodedParts = parts.map((part) => encodeURIComponent(part));
+    return `http://localhost:8080${encodedParts.join("/")}`;
+  };
 
   return (
     <main className="home-page">
@@ -70,7 +82,7 @@ function HomePage({ userName, books = [], onHome, onLibrary, onAddBook, onProfil
 
                   <div className="book-cover">
                     {book.cover ? (
-                      <img src={book.cover} alt={`Cover ${book.title}`} />
+                      <img src={buildFileUrl(book.cover)} alt={`Cover ${book.title}`} />
                     ) : (
                       <span>BOOK</span>
                     )}

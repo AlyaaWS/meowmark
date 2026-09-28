@@ -18,6 +18,7 @@ function AddBookPage({
   const [description, setDescription] = useState("");
   const [review, setReview] = useState("");
   const [category, setCategory] = useState("Non Fiction");
+  const [isCustomCategory, setIsCustomCategory] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPage, setTotalPage] = useState(100);
 
@@ -37,11 +38,23 @@ function AddBookPage({
     setCoverFile(file);
   };
 
-  const handlePdfChange = (event) => {
+  const handlePdfChange = async (event) => {
     const file = event.target.files?.[0];
     if (!file) return;
     setPdfFile(file);
     setBookFileName(file.name);
+
+    try {
+      const fileUrl = URL.createObjectURL(file);
+      const { pdfjs } = await import("react-pdf");
+      pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+      
+      const loadingTask = pdfjs.getDocument(fileUrl);
+      const pdf = await loadingTask.promise;
+      setTotalPage(pdf.numPages);
+    } catch (err) {
+      console.error("Gagal membaca jumlah halaman PDF:", err);
+    }
   };
 
   const handleSubmit = async (event) => {
@@ -200,37 +213,55 @@ function AddBookPage({
 
         <div className="form-group">
           <label>Category</label>
-          <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-          >
-            <option>Fiction</option>
-            <option>Non Fiction</option>
-            <option>Comedy</option>
-            <option>Romance</option>
-            <option>Horror</option>
-          </select>
+          {isCustomCategory ? (
+            <div style={{ display: "flex", gap: "10px" }}>
+              <input
+                type="text"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                placeholder="Type new category..."
+                autoFocus
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  setIsCustomCategory(false);
+                  setCategory("Non Fiction");
+                }}
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  color: "var(--color-brown)",
+                  fontWeight: "bold",
+                  cursor: "pointer",
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          ) : (
+            <select
+              value={category}
+              onChange={(e) => {
+                if (e.target.value === "ADD_NEW") {
+                  setIsCustomCategory(true);
+                  setCategory("");
+                } else {
+                  setCategory(e.target.value);
+                }
+              }}
+            >
+              <option value="Fiction">Fiction</option>
+              <option value="Non Fiction">Non Fiction</option>
+              <option value="Comedy">Comedy</option>
+              <option value="Romance">Romance</option>
+              <option value="Horror">Horror</option>
+              <option value="ADD_NEW" style={{ fontWeight: "bold" }}>+ Tambah Kategori Baru...</option>
+            </select>
+          )}
         </div>
 
-        <div className="page-row">
-          <div className="form-group">
-            <label>Current Page</label>
-            <input
-              type="number"
-              value={currentPage}
-              onChange={(e) => setCurrentPage(Number(e.target.value))}
-            />
-          </div>
 
-          <div className="form-group">
-            <label>Total Page</label>
-            <input
-              type="number"
-              value={totalPage}
-              onChange={(e) => setTotalPage(Number(e.target.value))}
-            />
-          </div>
-        </div>
 
         <button type="submit" className="save-button" disabled={loading}>
           {loading ? "Saving..." : "Save Book"}

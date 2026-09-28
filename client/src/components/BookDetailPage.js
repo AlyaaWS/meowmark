@@ -13,6 +13,7 @@ function BookDetailPage({
   onLibrary,
   onAddBook,
   onProfile,
+  onEditBook,
 }) {
   const [rating, setRating] = useState(selectedBook?.rating || 4);
 
@@ -22,6 +23,14 @@ function BookDetailPage({
 
   const [showToast, setShowToast] = useState(false);
 
+  const buildFileUrl = (path) => {
+    if (!path) return null;
+    if (path.startsWith("http") || path.startsWith("blob:") || path.startsWith("data:")) return path;
+    const parts = path.split("/");
+    const encodedParts = parts.map((part) => encodeURIComponent(part));
+    return `http://localhost:8080${encodedParts.join("/")}`;
+  };
+
   const renderStars = () => {
     return [...Array(5)].map((_, index) => {
       const value = index + 1;
@@ -30,9 +39,7 @@ function BookDetailPage({
         <span
           key={value}
           className={value <= rating ? "star active" : "star"}
-          onClick={() => {
-            setRating(value);
-          }}
+          onClick={() => handleRatingChange(value)}
         >
           ★
         </span>
@@ -60,19 +67,48 @@ function BookDetailPage({
     }
   };
 
-  const handleReviewBlur = () => {
+  const saveBookDetails = async (newRating, newReview) => {
+    try {
+      const updatedData = {
+        ...selectedBook,
+        rating: newRating,
+        review: newReview,
+        user_id: Number(localStorage.getItem("userId"))
+      };
+
+      const response = await fetch(`http://localhost:8080/books/${selectedBook.ID}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedData),
+      });
+
+      if (!response.ok) throw new Error("Failed to save book details");
+      
+      const savedBook = await response.json();
+      setSelectedBook(savedBook);
+      
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 1500);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to save data");
+    }
+  };
+
+  const handleRatingChange = (newRating) => {
+    setRating(newRating);
+    saveBookDetails(newRating, review);
+  };
+
+  const handleReviewSave = () => {
     setIsEditing(false);
-
-    setShowToast(true);
-
-    setTimeout(() => {
-      setShowToast(false);
-    }, 1500);
+    saveBookDetails(rating, review);
   };
 
   const handleReviewChange = (e) => {
     setReview(e.target.value);
-
     e.target.style.height = "auto";
     e.target.style.height = `${e.target.scrollHeight}px`;
   };
@@ -99,7 +135,7 @@ function BookDetailPage({
         <div className="detail-cover-wrapper">
           {selectedBook?.cover ? (
             <img
-              src={selectedBook.cover}
+              src={buildFileUrl(selectedBook.cover)}
               alt={selectedBook.title}
               className="detail-cover"
             />
@@ -135,43 +171,58 @@ function BookDetailPage({
 
         <div className="review-section">
           {isEditing ? (
-            <textarea
-              className="review-input"
-              value={review}
-              autoFocus
-              placeholder="Write your review..."
-              rows={5}
-              onChange={handleReviewChange}
-              onBlur={handleReviewBlur}
-            />
+            <div style={{display: "flex", flexDirection: "column", gap: "10px"}}>
+              <textarea
+                className="review-input"
+                value={review}
+                autoFocus
+                placeholder="Write your review..."
+                rows={5}
+                onChange={handleReviewChange}
+              />
+              <button 
+                onClick={handleReviewSave}
+                style={{alignSelf: "flex-end", padding: "5px 15px", borderRadius: "8px", border: "none", backgroundColor: "var(--color-brown)", color: "white", cursor: "pointer"}}
+              >
+                Save
+              </button>
+            </div>
           ) : (
-            <div className="review-box">
-              {review || "Belum ada review, meow 🐾"}
+            <div className="review-box" style={{display: "flex", flexDirection: "column", gap: "10px"}}>
+              <div style={{flex: 1}}>{review || "Belum ada review, meow 🐾"}</div>
+              <button 
+                onClick={() => setIsEditing(true)}
+                style={{alignSelf: "flex-end", background: "none", border: "none", color: "var(--color-cream)", cursor: "pointer", fontWeight: "bold", padding: 0, fontSize: "14px", textDecoration: "underline"}}
+              >
+                Edit Review
+              </button>
             </div>
           )}
         </div>
       </section>
 
-      {!isEditing && (
-        <button
-          className="detail-edit-review"
-          onClick={() => {
-            setIsEditing(true);
-          }}
-        >
-          <img src={editIcon} alt="Edit" className="detail-edit-icon" />
-        </button>
-      )}
+      <button
+        className="detail-edit-review"
+        onClick={() => {
+          if (typeof onEditBook === "function") {
+            onEditBook(selectedBook);
+          }
+        }}
+      >
+        <img src={editIcon} alt="Edit" className="detail-edit-icon" />
+      </button>
 
       {showToast && <div className="toast">🐾 Purrfect! Review updated.</div>}
 
-      <BottomNavbar
-        activePage="home"
-        onHome={onHome}
-        onLibrary={onLibrary}
-        onAddBook={onAddBook}
-        onProfile={onProfile}
-      />
+      {!isEditing && (
+        <BottomNavbar
+          activePage="home"
+          onHome={onHome}
+          onLibrary={onLibrary}
+          onAddBook={onAddBook}
+          onProfile={onProfile}
+        />
+      )}
     </main>
   );
 }

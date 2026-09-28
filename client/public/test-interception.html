@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <canvas id="c"></canvas>
+  <script type="module">
+    import * as pdfjsLib from 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.mjs';
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.worker.mjs';
+    
+    async function test() {
+      const loadingTask = pdfjsLib.getDocument('http://localhost:8080/uploads/1788356250958767800_test.pdf');
+      const pdf = await loadingTask.promise;
+      const page = await pdf.getPage(1);
+      const viewport = page.getViewport({ scale: 1.0 });
+      const canvas = document.getElementById('c');
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+      const ctx = canvas.getContext('2d');
+      
+      const images = [];
+      const origDrawImage = ctx.drawImage;
+      let currentTransform = new DOMMatrix();
+      let stack = [];
+      
+      ctx.save = function() { stack.push(new DOMMatrix(currentTransform)); CanvasRenderingContext2D.prototype.save.call(this); };
+      ctx.restore = function() { currentTransform = stack.pop() || new DOMMatrix(); CanvasRenderingContext2D.prototype.restore.call(this); };
+      ctx.transform = function(a,b,c,d,e,f) { currentTransform.multiplySelf(new DOMMatrix([a,b,c,d,e,f])); CanvasRenderingContext2D.prototype.transform.apply(this, arguments); };
+      ctx.setTransform = function(a,b,c,d,e,f) { currentTransform = new DOMMatrix([a,b,c,d,e,f]); CanvasRenderingContext2D.prototype.setTransform.apply(this, arguments); };
+      ctx.drawImage = function(img, ...args) {
+          console.log('drawImage called! img size:', img.width, img.height);
+          const yPos = currentTransform.f; 
+          console.log('Absolute Y position:', yPos);
+          origDrawImage.apply(this, [img, ...args]);
+      };
+      
+      await page.render({ canvasContext: ctx, viewport }).promise;
+      console.log('Render complete');
+    }
+    test().catch(console.error);
+  </script>
+</body>
+</html>

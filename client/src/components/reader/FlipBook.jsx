@@ -39,6 +39,10 @@ function FlipBook({
 
   const [fontSize, setFontSize] = useState(18);
 
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
+  const minSwipeDistance = 50;
+
 
   // ===================================================
   // LOAD PDF
@@ -116,30 +120,65 @@ function FlipBook({
 
 
         // =============================================
-        // AMBIL TEXT CONTENT
+        // AMBIL TEXT CONTENT DAN GAMBAR
         // =============================================
 
-        const textContent =
-          await page.getTextContent();
-
+        const textContent = await page.getTextContent();
+        
+        const viewport = page.getViewport({ scale: 1.0 });
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        
+        const images = [];
+        const origDrawImage = ctx.drawImage;
+        let currentTransform = new DOMMatrix();
+        let stack = [];
+        
+        ctx.save = function() { stack.push(new DOMMatrix(currentTransform)); CanvasRenderingContext2D.prototype.save.call(this); };
+        ctx.restore = function() { currentTransform = stack.pop() || new DOMMatrix(); CanvasRenderingContext2D.prototype.restore.call(this); };
+        ctx.transform = function(a,b,c,d,e,f) { currentTransform.multiplySelf(new DOMMatrix([a,b,c,d,e,f])); CanvasRenderingContext2D.prototype.transform.apply(this, arguments); };
+        ctx.setTransform = function(a,b,c,d,e,f) { currentTransform = new DOMMatrix([a,b,c,d,e,f]); CanvasRenderingContext2D.prototype.setTransform.apply(this, arguments); };
+        
+        ctx.drawImage = function(img, ...args) {
+          if (img.width > 0 && img.height > 0) {
+             const yPosCanvas = currentTransform.f;
+             // Ubah koordinat Canvas Y (dari atas) ke PDF Y (dari bawah) agar cocok dengan textContent.items
+             const yPosPdf = viewport.viewBox[3] - (yPosCanvas / viewport.scale);
+             
+             // Convert ke data URL
+             const tmpCanvas = document.createElement("canvas");
+             tmpCanvas.width = img.width;
+             tmpCanvas.height = img.height;
+             tmpCanvas.getContext("2d").drawImage(img, 0, 0);
+             
+             images.push({
+               str: '',
+               type: 'image',
+               src: tmpCanvas.toDataURL(),
+               width: img.width,
+               height: img.height,
+               transform: [1, 0, 0, 1, currentTransform.e, yPosPdf]
+             });
+          }
+          origDrawImage.apply(this, [img, ...args]);
+        };
+        
+        // Render ke canvas hanya untuk mengekstrak gambar
+        await page.render({ canvasContext: ctx, viewport }).promise;
 
         if (cancelled) {
           return;
         }
 
-
-        console.log(
-          "Text items:",
-          textContent.items.length
-        );
-
+        const allItems = [...textContent.items, ...images];
 
         // =============================================
-        // UBAH TEXT ITEM → PARAGRAPH
+        // UBAH TEXT ITEM & GAMBAR → PARAGRAPH
         // =============================================
 
-        const paragraphs =
-          buildParagraphs(textContent.items);
+        const paragraphs = buildParagraphs(allItems);
 
 
         if (cancelled) {
@@ -397,6 +436,33 @@ function FlipBook({
 
 
   // ===================================================
+  // SWIPE GESTURES
+  // ===================================================
+
+  const onTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+    
+    if (isLeftSwipe) {
+      nextPage();
+    }
+    if (isRightSwipe) {
+      previousPage();
+    }
+  };
+
+  // ===================================================
   // READER
   // ===================================================
 
@@ -430,7 +496,39 @@ function FlipBook({
         <div className="reader-page-number">
 
           {numPages
-            ? `${currentPage} / ${numPages}`
+            ? (
+              <form 
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const inputPage = parseInt(e.target.elements.pageInput.value, 10);
+                  if (!isNaN(inputPage) && inputPage >= 1 && inputPage <= numPages) {
+                    setCurrentPage(inputPage);
+                  }
+                }}
+                style={{ display: "inline-flex", alignItems: "center" }}
+              >
+                <input 
+                  name="pageInput"
+                  type="number"
+                  min={1}
+                  max={numPages}
+                  defaultValue={currentPage}
+                  key={currentPage} // so it updates when page changes via arrows
+                  style={{
+                    width: "50px",
+                    textAlign: "center",
+                    background: "transparent",
+                    border: "1px solid currentColor",
+                    borderRadius: "4px",
+                    padding: "2px",
+                    color: "inherit",
+                    fontSize: "inherit"
+                  }}
+                  title="Tekan Enter untuk pindah halaman"
+                />
+                <span style={{ marginLeft: "5px" }}>/ {numPages}</span>
+              </form>
+            )
             : "..."}
 
         </div>
@@ -450,7 +548,12 @@ function FlipBook({
           READING AREA
       ================================================= */}
 
-      <main className="reading-area">
+      <main 
+        className="reading-area"
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+      >
 
 
         {loading ? (
@@ -487,62 +590,36 @@ function FlipBook({
                 dibaca pada halaman ini.
 
               </p>
-
             ) : (
-
-              pageText.map(
-                (paragraph, index) => {
-
-                  // ======================================
-                  // HEADING
-                  // ======================================
-
-                  if (
-                    paragraph.type ===
-                    "heading"
-                  ) {
-
-                    return (
-
-                      <h2
-                        key={index}
-                        className="reader-heading"
-                      >
-
-                        {paragraph.text}
-
-                      </h2>
-
-                    );
-
-                  }
-
-
-                  // ======================================
-                  // PARAGRAPH
-                  // ======================================
-
+              pageText.map((paragraph, index) => {
+                if (paragraph.type === "heading") {
                   return (
-
-                    <p
-                      key={index}
-                      className={
-                        `reader-paragraph ${paragraph.indent
-                          ? "has-indent"
-                          : ""
-                        }`
-                      }
-                    >
-
+                    <h2 key={index} className="reader-heading">
                       {paragraph.text}
-
-                    </p>
-
+                    </h2>
                   );
-
                 }
-              )
 
+                if (paragraph.type === "image") {
+                  return (
+                    <img 
+                      key={index} 
+                      src={paragraph.src} 
+                      alt="PDF Content"
+                      style={{ maxWidth: '100%', height: 'auto', display: 'block', margin: '20px auto' }}
+                    />
+                  );
+                }
+
+                return (
+                  <p 
+                    key={index}
+                    className={`reader-paragraph ${paragraph.indent ? "has-indent" : ""}`}
+                  >
+                    {paragraph.text}
+                  </p>
+                );
+              })
             )}
 
           </article>
@@ -663,42 +740,22 @@ function buildParagraphs(items) {
   // ===================================================
 
   const validItems = items
-
     .filter((item) => {
-
       return (
-        item.str &&
-        item.str.trim() !== ""
+        item.type === "image" || (item.str && item.str.trim() !== "")
       );
-
     })
-
     .map((item) => {
-
-      const transform =
-        item.transform || [];
-
-
+      const transform = item.transform || [];
       return {
-
-        text: item.str,
-
-        x:
-          transform[4] || 0,
-
-        y:
-          transform[5] || 0,
-
-        height:
-          Math.abs(
-            transform[3]
-          ) || 10,
-
-        width:
-          item.width || 0,
-
+        type: item.type || "text",
+        src: item.src || null,
+        text: item.str || "",
+        x: transform[4] || 0,
+        y: transform[5] || 0,
+        height: Math.abs(transform[3]) || item.height || 10,
+        width: item.width || 0,
       };
-
     });
 
 
@@ -715,349 +772,108 @@ function buildParagraphs(items) {
   // 1. KELOMPOKKAN MENJADI BARIS
   // ===================================================
 
-  const lines = [];
-
+  const groupedByY = {};
 
   validItems.forEach((item) => {
-
-    let line =
-      lines.find((existingLine) => {
-
-        return (
-          Math.abs(
-            existingLine.y -
-            item.y
-          ) <
-          Math.max(
-            item.height,
-            8
-          )
-        );
-
-      });
+    const yKey = Math.round(item.y / 5) * 5; 
+    if (!groupedByY[yKey]) groupedByY[yKey] = { y: yKey, items: [] };
+    groupedByY[yKey].items.push(item);
+  });
 
 
-    if (!line) {
+  // ===================================================
+  // 2. KELOMPOKKAN ITEM MENJADI BARIS & IMAGE
+  // ===================================================
 
-      line = {
+  const sortedLines = Object.values(groupedByY).sort((a, b) => b.y - a.y);
+  const normalizedLines = [];
 
-        y: item.y,
+  sortedLines.forEach((line) => {
+    const lineItems = line.items.sort((a, b) => a.x - b.x);
+    let currentText = "";
+    let firstTextX = 0;
+    let firstTextHeight = 10;
 
-        items: [],
+    lineItems.forEach((item, index) => {
+      if (item.type === "image") {
+        if (currentText.trim().length > 0) {
+          normalizedLines.push({ type: "text", text: cleanText(currentText), x: firstTextX, y: line.y, height: firstTextHeight });
+          currentText = "";
+        }
+        normalizedLines.push({ type: "image", src: item.src, y: item.y });
+      } else {
+        const previous = lineItems[index - 1];
+        if (currentText.length === 0) {
+          firstTextX = item.x;
+          firstTextHeight = item.height;
+        } else if (previous && item.x - (previous.x + previous.width) > Math.max(previous.height * 0.15, 2)) {
+          currentText += " ";
+        }
+        currentText += item.text;
+      }
+    });
 
-      };
-
-
-      lines.push(line);
-
+    if (currentText.trim().length > 0) {
+      normalizedLines.push({ type: "text", text: cleanText(currentText), x: firstTextX, y: line.y, height: firstTextHeight });
     }
-
-
-    line.items.push(item);
-
   });
-
-
-  // ===================================================
-  // URUTKAN ATAS → BAWAH
-  // ===================================================
-
-  lines.sort(
-    (a, b) =>
-      b.y - a.y
-  );
-
-
-  // ===================================================
-  // URUTKAN ITEM KIRI → KANAN
-  // ===================================================
-
-  lines.forEach((line) => {
-
-    line.items.sort(
-      (a, b) =>
-        a.x - b.x
-    );
-
-  });
-
-
-  // ===================================================
-  // 2. GABUNGKAN ITEM MENJADI BARIS
-  // ===================================================
-
-  const normalizedLines =
-    lines
-
-      .map((line) => {
-
-        let text = "";
-
-
-        line.items.forEach(
-          (item, index) => {
-
-            const previous =
-              line.items[
-              index - 1
-              ];
-
-
-            // Item pertama
-            if (!previous) {
-
-              text += item.text;
-
-              return;
-
-            }
-
-
-            // =========================================
-            // HITUNG JARAK HORIZONTAL
-            // =========================================
-
-            const previousEnd =
-              previous.x +
-              previous.width;
-
-
-            const gap =
-              item.x -
-              previousEnd;
-
-
-            // =========================================
-            // KALAU ADA GAP,
-            // TAMBAHKAN SPASI
-            // =========================================
-
-            if (
-              gap >
-              Math.max(
-                previous.height *
-                0.15,
-                2
-              )
-            ) {
-
-              text += " ";
-
-            }
-
-
-            text += item.text;
-
-          }
-        );
-
-
-        return {
-
-          text:
-            cleanText(text),
-
-          x:
-            line.items[0]?.x ||
-            0,
-
-          y:
-            line.y,
-
-          height:
-            line.items[0]?.height ||
-            10,
-
-        };
-
-      })
-
-      .filter(
-        (line) =>
-          line.text
-      );
-
 
   // ===================================================
   // 3. KELOMPOKKAN MENJADI PARAGRAF
   // ===================================================
 
   const paragraphs = [];
-
-
-  let currentParagraph =
-    null;
-
-
-  normalizedLines.forEach(
-    (line, index) => {
-
-      const previous =
-        normalizedLines[
-        index - 1
-        ];
-
-
-      // ===============================================
-      // JARAK VERTIKAL
-      // ===============================================
-
-      const verticalGap =
-        previous
-          ? Math.abs(
-            previous.y -
-            line.y
-          )
-          : 0;
-
-
-      // ===============================================
-      // GAP BESAR = PARAGRAF BARU
-      // ===============================================
-
-      const isLargeGap =
-        previous &&
-        verticalGap >
-        previous.height *
-        1.8;
-
-
-      // ===============================================
-      // DETEKSI HEADING
-      // ===============================================
-
-      const isHeading =
-        isHeadingText(
-          line.text
-        );
-
-
-      // ===============================================
-      // HEADING
-      // ===============================================
-
-      if (isHeading) {
-
-        if (currentParagraph) {
-
-          paragraphs.push({
-
-            type:
-              "paragraph",
-
-            text:
-              currentParagraph.text,
-
-            indent:
-              currentParagraph.indent,
-
-          });
-
-
-          currentParagraph =
-            null;
-
-        }
-
-
-        paragraphs.push({
-
-          type:
-            "heading",
-
-          text:
-            line.text,
-
-        });
-
-
-        return;
-
-      }
-
-
-      // ===============================================
-      // PARAGRAF BARU
-      // ===============================================
-
-      if (
-        !currentParagraph ||
-        isLargeGap
-      ) {
-
-        if (currentParagraph) {
-
-          paragraphs.push({
-
-            type:
-              "paragraph",
-
-            text:
-              currentParagraph.text,
-
-            indent:
-              currentParagraph.indent,
-
-          });
-
-        }
-
-
-        currentParagraph = {
-
-          text:
-            line.text,
-
-          // Deteksi apakah awal baris
-          // lebih menjorok dibanding
-          // margin normal PDF.
-          indent:
-            line.x > 30,
-
-        };
-
-
-        return;
-
-      }
-
-
-      // ===============================================
-      // LANJUTAN PARAGRAF
-      // ===============================================
-
-      currentParagraph.text +=
-        " " +
-        line.text;
-
-    }
-  );
-
-
-  // ===================================================
-  // PARAGRAF TERAKHIR
-  // ===================================================
-
-  if (currentParagraph) {
-
-    paragraphs.push({
-
-      type:
-        "paragraph",
-
-      text:
-        currentParagraph.text,
-
-      indent:
-        currentParagraph.indent,
-
-    });
-
+  let currentParagraph = null;
+
+  // Cari margin kiri (min X) untuk menentukan indentasi relatif
+  const textLines = normalizedLines.filter(l => l.type !== "image");
+  let minX = 0;
+  if (textLines.length > 0) {
+    minX = Math.min(...textLines.map(l => l.x));
   }
 
+  normalizedLines.forEach((line, index) => {
+    if (line.type === "image") {
+      if (currentParagraph) {
+        paragraphs.push({ type: "paragraph", text: currentParagraph.text, indent: currentParagraph.indent });
+        currentParagraph = null;
+      }
+      paragraphs.push({ type: "image", src: line.src });
+      return;
+    }
+
+    const previous = normalizedLines[index - 1];
+    const verticalGap = previous && previous.type !== "image" ? Math.abs(previous.y - line.y) : 0;
+    const isLargeGap = previous && previous.type !== "image" && verticalGap > previous.height * 1.8;
+    const isHeading = isHeadingText(line.text);
+
+    if (isHeading) {
+      if (currentParagraph) {
+        paragraphs.push({ type: "paragraph", text: currentParagraph.text, indent: currentParagraph.indent });
+        currentParagraph = null;
+      }
+      paragraphs.push({ type: "heading", text: line.text });
+      return;
+    }
+
+    const isIndented = line.x > minX + 15; // 15px threshold for indent
+
+    if (!currentParagraph || isLargeGap || isIndented) {
+      if (currentParagraph) {
+        paragraphs.push({ type: "paragraph", text: currentParagraph.text, indent: currentParagraph.indent });
+      }
+      currentParagraph = { text: line.text, indent: isIndented };
+      return;
+    }
+
+    currentParagraph.text += " " + line.text;
+  });
+
+  if (currentParagraph) {
+    paragraphs.push({ type: "paragraph", text: currentParagraph.text, indent: currentParagraph.indent });
+  }
 
   return paragraphs;
-
 }
 
 

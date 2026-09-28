@@ -9,6 +9,7 @@ type Book struct {
 	Author      string `json:"author"`
 	Description string `json:"description"`
 	Review      string `json:"review"`
+	Rating      int    `gorm:"default:0" json:"rating"`
 
 	CurrentPage int `json:"current_page"`
 	TotalPage   int `json:"total_page"`
