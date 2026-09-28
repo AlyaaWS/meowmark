@@ -19,7 +19,7 @@ func ConnectDatabase() {
 	err := godotenv.Load()
 
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		log.Println("No .env file found, using environment variables")
 	}
 
 	dsn := fmt.Sprintf(
@@ -41,16 +41,16 @@ func ConnectDatabase() {
 	DB = database
 
 	err = DB.AutoMigrate(
-	&models.User{},
-	&models.Book{},
-	&models.Category{},
-	&models.BookCategory{},
-)
+		&models.User{},
+		&models.Book{},
+		&models.Category{},
+		&models.BookCategory{},
+	)
 
-if err != nil {
-	log.Fatal(err)
-}
+	if err != nil {
+		log.Fatal(err)
+	}
 
-fmt.Println("Database Connected!")
-fmt.Println("Migration Success!")
+	fmt.Println("Database Connected!")
+	fmt.Println("Migration Success!")
 }
