@@ -1,0 +1,4 @@
+framework: go
+build: go build -o server ./cmd/api
+start: ./server
+port: 8080
