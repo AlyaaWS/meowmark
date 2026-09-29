@@ -45,10 +45,11 @@ func main() {
 
 	router.Static("/uploads", "./uploads")
 
+	// API routes
 	routes.UserRoutes(router)
 	routes.BookRoutes(router)
 
-	// Root endpoint untuk health check/deployment check
+	// Root endpoint
 	router.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"status":  "ok",
@@ -63,10 +64,18 @@ func main() {
 		})
 	})
 
+	// Use PORT provided by hosting platform
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
 	}
 
-	router.Run(":" + port)
+	// Explicitly listen on all network interfaces
+	address := "0.0.0.0:" + port
+
+	println("Starting MeowMark API on " + address)
+
+	if err := router.Run(address); err != nil {
+		panic(err)
+	}
 }
