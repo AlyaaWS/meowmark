@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+import { API_BASE_URL } from "../config";
 import heroLogo from "../assets/hero_logo.png";
 import "./NamePage.css";
 
@@ -14,7 +14,7 @@ function NamePage({ onSave }) {
     }
 
     try {
-      const response = await fetch("http://localhost:8080/users", {
+      const response = await fetch(`${API_BASE_URL}/users`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

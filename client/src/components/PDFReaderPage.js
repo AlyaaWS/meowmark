@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-
+import { API_BASE_URL } from "../config";
 import "./PDFReaderPage.css";
 
 import BottomNavbar from "./BottomNavbar";
@@ -60,7 +60,7 @@ function PDFReaderPage({ selectedBook, onHome, onLibrary, onAddBook, onUpdatePro
           user_id: Number(localStorage.getItem("userId")) || selectedBook.user_id
         };
         
-        await fetch(`http://localhost:8080/books/${bookId}`, {
+        await fetch(`${API_BASE_URL}/books/${bookId}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(updatedData),
@@ -95,7 +95,7 @@ function PDFReaderPage({ selectedBook, onHome, onLibrary, onAddBook, onUpdatePro
     // path contoh: /uploads/1234567890_namafile.pdf
     const parts = path.split("/");
     const encodedParts = parts.map((part) => encodeURIComponent(part));
-    return `http://localhost:8080${encodedParts.join("/")}`;
+    return `${API_BASE_URL}${encodedParts.join("/")}`;
   };
 
   const pdfUrl = buildFileUrl(selectedBook?.pdf);

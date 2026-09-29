@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-
+import { API_BASE_URL } from "./config";
 import LoadingPage from "./components/LoadingPage";
 import WelcomePage from "./components/WelcomePage";
 import NamePage from "./components/NamePage";
@@ -34,7 +34,7 @@ function App() {
     setIsBooksLoading(true);
     try {
       const response = await fetch(
-        `http://localhost:8080/books?userId=${userId}`,
+        `${API_BASE_URL}/books?userId=${userId}`,
         { cache: "no-store" }
       );
 
@@ -69,7 +69,7 @@ function App() {
       if (!userId) return;
 
       try {
-        const response = await fetch(`http://localhost:8080/users/${userId}`);
+        const response = await fetch(`${API_BASE_URL}/users/${userId}`);
 
         if (!response.ok) {
           throw new Error("User tidak ditemukan");

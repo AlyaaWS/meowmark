@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-
+import { API_BASE_URL } from "../config";
 import "./LibraryPage.css";
 import BookPopup from "./BookPopup";
 
@@ -74,7 +74,7 @@ function LibraryPage({
     if (path.startsWith("http") || path.startsWith("blob:") || path.startsWith("data:")) return path;
     const parts = path.split("/");
     const encodedParts = parts.map((part) => encodeURIComponent(part));
-    return `http://localhost:8080${encodedParts.join("/")}`;
+    return `${API_BASE_URL}${encodedParts.join("/")}`;
   };
 
   const handleFavorite = async (bookId) => {
@@ -82,7 +82,7 @@ function LibraryPage({
     if (!userId) return;
 
     try {
-      const response = await fetch(`http://localhost:8080/books/${bookId}/favorite`, {
+      const response = await fetch(`${API_BASE_URL}/books/${bookId}/favorite`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -394,7 +394,7 @@ function LibraryPage({
         onDelete={async () => {
           if (!selectedBook) return;
           try {
-            const response = await fetch(`http://localhost:8080/books/${selectedBook.ID}`, {
+            const response = await fetch(`${API_BASE_URL}/books/${selectedBook.ID}`, {
               method: "DELETE",
             });
             if (!response.ok) throw new Error("Failed to delete book");

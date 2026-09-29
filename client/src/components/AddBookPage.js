@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+import { API_BASE_URL } from "../config";
 import "./AddBookPage.css";
 import BottomNavbar from "./BottomNavbar";
 
@@ -89,7 +89,7 @@ function AddBookPage({
     setLoading(true);
     try {
       // Jangan set Content-Type — biarkan browser atur multipart boundary otomatis
-      const response = await fetch("http://localhost:8080/books", {
+      const response = await fetch(`${API_BASE_URL}/books`, {
         method: "POST",
         body: formData,
       });

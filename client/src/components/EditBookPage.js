@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+import { API_BASE_URL } from "../config";
 import "./EditBookPage.css";
 
 import profileImage from "../assets/profil.png";
@@ -98,7 +98,7 @@ function EditBookPage({ selectedBook, onBack, onSave, onProfile}) {
     }
 
     try {
-      const response = await fetch(`http://localhost:8080/books/${selectedBook.ID}`, {
+      const response = await fetch(`${API_BASE_URL}/books/${selectedBook.ID}`, {
         method: "PUT",
         body: formData,
       });

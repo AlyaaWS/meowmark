@@ -1,5 +1,5 @@
 import { useRef } from "react";
-
+import { API_BASE_URL } from "../config";
 import "./HomePage.css";
 
 import profileImage from "../assets/profil.png";
@@ -23,7 +23,7 @@ function HomePage({ userName, books = [], onHome, onLibrary, onAddBook, onProfil
     if (path.startsWith("http") || path.startsWith("blob:") || path.startsWith("data:")) return path;
     const parts = path.split("/");
     const encodedParts = parts.map((part) => encodeURIComponent(part));
-    return `http://localhost:8080${encodedParts.join("/")}`;
+    return `${API_BASE_URL}${encodedParts.join("/")}`;
   };
 
   return (

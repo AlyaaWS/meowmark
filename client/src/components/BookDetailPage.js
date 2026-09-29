@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+import { API_BASE_URL } from "../config";
 import "./BookDetailPage.css";
 import profileImage from "../assets/profil.png";
 import BottomNavbar from "./BottomNavbar";
@@ -28,7 +28,7 @@ function BookDetailPage({
     if (path.startsWith("http") || path.startsWith("blob:") || path.startsWith("data:")) return path;
     const parts = path.split("/");
     const encodedParts = parts.map((part) => encodeURIComponent(part));
-    return `http://localhost:8080${encodedParts.join("/")}`;
+    return `${API_BASE_URL}${encodedParts.join("/")}`;
   };
 
   const renderStars = () => {
@@ -76,7 +76,7 @@ function BookDetailPage({
         user_id: Number(localStorage.getItem("userId"))
       };
 
-      const response = await fetch(`http://localhost:8080/books/${selectedBook.ID}`, {
+      const response = await fetch(`${API_BASE_URL}/books/${selectedBook.ID}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

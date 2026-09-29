@@ -1,6 +1,7 @@
 .env
 .env.*
 !.env.example
+*.sql
 
 client/node_modules/
 client/dist/
