@@ -16,7 +16,6 @@ func main() {
 
 	router := gin.Default()
 
-	// CORS
 	router.Use(cors.New(cors.Config{
 		AllowOrigins: []string{
 			"http://localhost:3000",
@@ -44,21 +43,26 @@ func main() {
 		MaxAge:           12 * time.Hour,
 	}))
 
-	// Static files
 	router.Static("/uploads", "./uploads")
 
-	// Routes
 	routes.UserRoutes(router)
 	routes.BookRoutes(router)
 
-	// Health check
+	// Root endpoint untuk health check/deployment check
+	router.GET("/", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"status":  "ok",
+			"message": "MeowMark API is running",
+		})
+	})
+
+	// Health check endpoint
 	router.GET("/health", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"status": "ok",
 		})
 	})
 
-	// Start server
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
