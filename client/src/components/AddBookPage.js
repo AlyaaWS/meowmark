@@ -19,7 +19,7 @@ function AddBookPage({
   const [review, setReview] = useState("");
   const [category, setCategory] = useState("Non Fiction");
   const [isCustomCategory, setIsCustomCategory] = useState(false);
-  const [currentPage, setCurrentPage] = useState(0);
+  const [currentPage] = useState(0);
   const [totalPage, setTotalPage] = useState(100);
 
   const [coverPreview, setCoverPreview] = useState(null);

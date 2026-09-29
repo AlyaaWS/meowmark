@@ -19,7 +19,7 @@ function PDFReaderPage({ selectedBook, onHome, onLibrary, onAddBook, onUpdatePro
 
   const [showControls, setShowControls] = useState(true);
 
-  const totalPage = selectedBook?.total_page ?? selectedBook?.totalPage ?? 200;
+
 
   const [currentPage, setCurrentPage] = useState(
     selectedBook?.current_page ?? selectedBook?.currentPage ?? 1

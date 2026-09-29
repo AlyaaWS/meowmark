@@ -25,7 +25,7 @@ function EditBookPage({ selectedBook, onBack, onSave, onProfile}) {
   
   const [isCustomCategory, setIsCustomCategory] = useState(isInitialCustom);
 
-  const [currentPage, setCurrentPage] = useState(
+  const [currentPage] = useState(
     selectedBook?.current_page ?? selectedBook?.currentPage ?? 0,
   );
 
