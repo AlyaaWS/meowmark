@@ -1,4 +1,4 @@
-FROM golang:1.26.5-alpine AS builder
+FROM golang:alpine AS builder
 
 WORKDIR /app
 
@@ -12,6 +12,8 @@ RUN go build -o server ./cmd/api
 FROM alpine:latest
 
 WORKDIR /app
+
+RUN apk --no-cache add ca-certificates && mkdir -p /app/uploads
 
 COPY --from=builder /app/server .
 
