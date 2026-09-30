@@ -1,12 +1,22 @@
 let API_BASE_URL;
 
 if (process.env.NODE_ENV === "production") {
-  // In production, strictly use the provided environment variable or default to the production URL.
-  // We avoid hardcoding any localhost string here so it doesn't get bundled.
-  API_BASE_URL = process.env.REACT_APP_API_URL || "https://meowmark-api.de.deplexo.com";
+  // In production, strictly use the provided environment variable.
+  // HOWEVER, if the environment variable was mistakenly set to localhost on Vercel, force the production URL.
+  const envUrl = process.env.REACT_APP_API_URL;
+  if (!envUrl || envUrl.includes("localhost") || envUrl.includes("127.0.0.1")) {
+    API_BASE_URL = "https://meowmark-api.de.deplexo.com";
+  } else {
+    API_BASE_URL = envUrl;
+  }
 } else {
   // In development, fallback to localhost if not specified
   API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:8080";
+}
+
+// Runtime fallback for Vercel just in case
+if (typeof window !== "undefined" && window.location.hostname === "meowmark.vercel.app") {
+  API_BASE_URL = "https://meowmark-api.de.deplexo.com";
 }
 
 // Pastikan protokol lengkap (default https:// jika tidak diawali http:// atau https://)
