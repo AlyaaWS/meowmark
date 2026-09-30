@@ -1,17 +1,25 @@
-let apiUrl = process.env.REACT_APP_API_URL;
+let API_BASE_URL = process.env.REACT_APP_API_URL;
 
-if (!apiUrl) {
-  apiUrl = process.env.NODE_ENV === 'production' 
-    ? "https://meowmark-api.de.deplexo.com" 
-    : "http://localhost:8080";
+if (process.env.NODE_ENV === 'production') {
+  // Force production to use the correct URL, even if Vercel env is misconfigured
+  if (!API_BASE_URL || API_BASE_URL.includes('localhost') || API_BASE_URL.includes('127.0.0.1')) {
+    API_BASE_URL = 'https://meowmark-api.de.deplexo.com';
+  }
+} else {
+  // Local development fallback
+  if (!API_BASE_URL) {
+    API_BASE_URL = 'http://localhost:8080';
+  }
 }
 
-if (apiUrl && !apiUrl.startsWith("http://") && !apiUrl.startsWith("https://")) {
-  apiUrl = "https://" + apiUrl;
+// Ensure protocol exists
+if (API_BASE_URL && !API_BASE_URL.startsWith('http://') && !API_BASE_URL.startsWith('https://')) {
+  API_BASE_URL = 'https://' + API_BASE_URL;
 }
 
-if (apiUrl && apiUrl.endsWith("/")) {
-  apiUrl = apiUrl.slice(0, -1);
+// Remove trailing slash
+if (API_BASE_URL && API_BASE_URL.endsWith('/')) {
+  API_BASE_URL = API_BASE_URL.slice(0, -1);
 }
 
-export const API_BASE_URL = apiUrl;
+export { API_BASE_URL };
