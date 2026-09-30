@@ -22,7 +22,7 @@ func CreateUser(c *gin.Context) {
 
 	if err := repository.CreateUser(&user); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Failed to create user",
+			"error": "Failed to create user: " + err.Error(),
 		})
 		return
 	}

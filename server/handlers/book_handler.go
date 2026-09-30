@@ -84,7 +84,7 @@ func CreateBook(c *gin.Context) {
 	// Simpan file
 	if err := c.SaveUploadedFile(file, pdfFilePath); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Failed to save PDF",
+			"error": "Failed to save PDF: " + err.Error(),
 		})
 		return
 	}
@@ -106,9 +106,13 @@ func CreateBook(c *gin.Context) {
 		)
 		coverFilePath := filepath.Join(uploadDir, coverFileName)
 
-		if err := c.SaveUploadedFile(coverFile, coverFilePath); err == nil {
-			book.Cover = "/" + filepath.ToSlash(coverFilePath)
+		if err := c.SaveUploadedFile(coverFile, coverFilePath); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": "Failed to save cover image: " + err.Error(),
+			})
+			return
 		}
+		book.Cover = "/" + filepath.ToSlash(coverFilePath)
 	}
 
 	// =========================
