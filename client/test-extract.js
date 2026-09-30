@@ -1,7 +1,7 @@
 const pdfjsLib = require('pdfjs-dist/legacy/build/pdf.js');
 
 async function extractImages() {
-  const loadingTask = pdfjsLib.getDocument('http://localhost:8080/uploads/1788356250958767800_test.pdf');
+  const loadingTask = pdfjsLib.getDocument(`${process.env.REACT_APP_API_URL}/uploads/1788356250958767800_test.pdf`);
   const pdf = await loadingTask.promise;
   const page = await pdf.getPage(1);
   const ops = await page.getOperatorList();
