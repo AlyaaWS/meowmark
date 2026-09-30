@@ -7,6 +7,7 @@ RUN go mod download
 
 COPY . .
 
+RUN go mod tidy
 RUN go build -o server ./cmd/api
 
 FROM alpine:latest
