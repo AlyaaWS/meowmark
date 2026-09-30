@@ -19,6 +19,7 @@ func main() {
 	router.Use(cors.New(cors.Config{
 		AllowOrigins: []string{
 			"http://localhost:3000",
+			"https://meowmark.vercel.app",
 		},
 		AllowMethods: []string{
 			"GET",
