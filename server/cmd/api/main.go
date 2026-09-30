@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+	"strings"
 	"time"
 
 	"github.com/gin-contrib/cors"
@@ -19,7 +20,11 @@ func main() {
 	router.Use(cors.New(cors.Config{
 		AllowOrigins: []string{
 			"http://localhost:3000",
+			"http://127.0.0.1:3000",
 			"https://meowmark.vercel.app",
+		},
+		AllowOriginFunc: func(origin string) bool {
+			return strings.HasSuffix(origin, ".vercel.app")
 		},
 		AllowMethods: []string{
 			"GET",
@@ -28,12 +33,15 @@ func main() {
 			"DELETE",
 			"OPTIONS",
 			"PATCH",
+			"HEAD",
 		},
 		AllowHeaders: []string{
 			"Origin",
 			"Content-Type",
 			"Accept",
+			"Authorization",
 			"Range",
+			"X-Requested-With",
 		},
 		ExposeHeaders: []string{
 			"Content-Length",

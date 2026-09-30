@@ -92,8 +92,8 @@ function PDFReaderPage({ selectedBook, onHome, onLibrary, onAddBook, onUpdatePro
   const buildFileUrl = (path) => {
     if (!path) return null;
     if (path.startsWith("http") || path.startsWith("blob:") || path.startsWith("data:")) return path;
-    // path contoh: /uploads/1234567890_namafile.pdf
-    const parts = path.split("/");
+    const cleanPath = path.startsWith("/") ? path : `/${path}`;
+    const parts = cleanPath.split("/");
     const encodedParts = parts.map((part) => encodeURIComponent(part));
     return `${API_BASE_URL}${encodedParts.join("/")}`;
   };

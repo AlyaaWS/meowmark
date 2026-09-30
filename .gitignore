@@ -1,6 +1,8 @@
 .env
 .env.*
 !.env.example
+!client/.env.production
+!client/.env.development
 *.sql
 
 client/node_modules/

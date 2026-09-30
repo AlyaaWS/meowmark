@@ -26,7 +26,8 @@ function BookDetailPage({
   const buildFileUrl = (path) => {
     if (!path) return null;
     if (path.startsWith("http") || path.startsWith("blob:") || path.startsWith("data:")) return path;
-    const parts = path.split("/");
+    const cleanPath = path.startsWith("/") ? path : `/${path}`;
+    const parts = cleanPath.split("/");
     const encodedParts = parts.map((part) => encodeURIComponent(part));
     return `${API_BASE_URL}${encodedParts.join("/")}`;
   };
