@@ -74,7 +74,7 @@ func main() {
 	// Explicitly listen on all network interfaces
 	address := "0.0.0.0:" + port
 
-	println("Starting MeowMark API on " + address)
+	println("Starting MeowMark API on " + address + " with CORS for Vercel")
 
 	if err := router.Run(address); err != nil {
 		panic(err)
