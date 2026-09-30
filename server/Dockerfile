@@ -14,7 +14,9 @@ FROM alpine:latest
 
 WORKDIR /app
 
-RUN apk --no-cache add ca-certificates
+RUN apk --no-cache add ca-certificates && \
+    mkdir -p /app/uploads && \
+    chmod 777 /app/uploads
 
 COPY --from=builder /app/server .
 
